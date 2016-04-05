@@ -20,25 +20,26 @@
 (defn find-the-pair []
   [:div
    [:h1 (:text @app-state)]
-   [:svg
-    {:view-box "0 0 4 4"
-     :width 500
-     :height 500}
-    (for [column (range (count (:board @app-state)))
-          row (range (count (:board @app-state)))]
-      [:rect {:x column
-              :y row
-              :width card-size
-              :height card-size
-              :fill (if (zero? (card-value row column))
-                      "#ccc"
-                      "#00ABE1")
-              :on-click
-              (fn card-click [e]
-                (prn "You clicked card" column row)
-                (swap! app-state assoc-in [:board row column]
-                       (inc (card-value row column)))
-                (prn (:board @app-state)))}])]])
+   (into
+     [:svg
+      {:view-box "0 0 4 4"
+       :width 500
+       :height 500}]
+     (for [column (range (count (:board @app-state)))
+           row (range (count (:board @app-state)))]
+       [:rect {:x column
+               :y row
+               :width card-size
+               :height card-size
+               :fill (if (zero? (card-value row column))
+                       "#ccc"
+                       "#00ABE1")
+               :on-click
+               (fn card-click [e]
+                 (prn "You clicked card" column row)
+                 (swap! app-state assoc-in [:board row column]
+                        (inc (card-value row column)))
+                 (prn (:board @app-state)))}]))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
