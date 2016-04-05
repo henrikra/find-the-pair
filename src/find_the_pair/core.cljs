@@ -33,7 +33,7 @@
     (swap! app-state assoc-in [:turn] 0)))
 
 (defn debug-state []
-  (prn (:board @app-state))
+  ;;(prn (:board @app-state))
   (prn (:selected-cards @app-state))
   (prn (:turn @app-state)))
 
