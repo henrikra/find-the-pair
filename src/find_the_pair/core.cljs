@@ -3,6 +3,8 @@
 
 (enable-console-print!)
 
+(def card-size 0.95)
+
 (defn new-board [size]
   (vec (repeat size (vec (repeat size 0)))))
 
@@ -12,6 +14,9 @@
   (atom {:text "Find the pair!"
          :board (new-board 4)}))
 
+(defn card-value [row column]
+  (get-in @app-state [:board row column]))
+
 (defn find-the-pair []
   [:div
    [:h1 (:text @app-state)]
@@ -19,16 +24,21 @@
     {:view-box "0 0 4 4"
      :width 500
      :height 500}
-    (for [i (range (count (:board @app-state)))
-          j (range (count (:board @app-state)))]
-      [:rect {:x i
-              :y j
-              :width 0.9
-              :height 0.9
-              :fill "#00ABE1"
+    (for [column (range (count (:board @app-state)))
+          row (range (count (:board @app-state)))]
+      [:rect {:x column
+              :y row
+              :width card-size
+              :height card-size
+              :fill (if (zero? (card-value row column))
+                      "#ccc"
+                      "#00ABE1")
               :on-click
-              (fn [e]
-                (prn "You just clicked!"))}])]])
+              (fn card-click [e]
+                (prn "You clicked card" column row)
+                (swap! app-state assoc-in [:board row column]
+                       (inc (card-value row column)))
+                (prn (:board @app-state)))}])]])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
