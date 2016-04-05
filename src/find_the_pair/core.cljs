@@ -12,10 +12,38 @@
 
 (defonce app-state
   (atom {:text "Find the pair!"
-         :board (new-board 4)}))
+         :board (new-board 4)
+         :selected-cards [[99 99] [99 99]]
+         :turn 0}))
 
 (defn card-value [row column]
   (get-in @app-state [:board row column]))
+
+(defn turn-value []
+  (get-in @app-state [:turn]))
+
+(defn set-selected-cards [row column]
+  (if (< (turn-value) 2)
+    (swap! app-state assoc-in [:selected-cards (turn-value)] [row column])
+    (swap! app-state assoc-in [:selected-cards] [[99 99] [99 99]])))
+
+(defn set-turn []
+  (if (< (turn-value) 2)
+    (swap! app-state assoc-in [:turn] (inc (get-in @app-state [:turn])))
+    (swap! app-state assoc-in [:turn] 0)))
+
+(defn debug-state []
+  ;;(prn (:board @app-state))
+  (prn (:selected-cards @app-state))
+  (prn (:turn @app-state)))
+
+(defn change-board-state [row column]
+  (swap! app-state assoc-in [:board row column]
+         (inc (card-value row column))))
+
+(defn selected-card? [row column]
+  (or (= [row column] (get-in @app-state [:selected-cards 0]))
+      (= [row column] (get-in @app-state [:selected-cards 1]))))
 
 (defn find-the-pair []
   [:div
@@ -31,15 +59,16 @@
                :y row
                :width card-size
                :height card-size
-               :fill (if (zero? (card-value row column))
-                       "#ccc"
-                       "#00ABE1")
+               :fill (if (selected-card? row column)
+                       "#00ABE1"
+                       "#ccc")
                :on-click
                (fn card-click [e]
-                 (prn "You clicked card" column row)
-                 (swap! app-state assoc-in [:board row column]
-                        (inc (card-value row column)))
-                 (prn (:board @app-state)))}]))])
+                 ;;(prn "You clicked card" column row)
+                 (set-selected-cards row column)
+                 (set-turn)
+                 (change-board-state row column)
+                 (debug-state))}]))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
