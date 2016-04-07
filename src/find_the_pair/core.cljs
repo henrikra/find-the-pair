@@ -15,8 +15,8 @@
     (generate-board actual-cards width height)))
 
 (def grid-width 4)
-(def grid-height 3)
-(def card-size 0.98)
+(def grid-height 4)
+(def card-size 0.99)
 
 (def initial-app-state
   {:text "Find the pair!"
@@ -66,19 +66,28 @@
        :height 500}]
      (for [x (range grid-width)
            y (range grid-height)]
-       [:rect {:x x
-               :y y
-               :width card-size
-               :height card-size
-               :fill (if (selected-card? x y)
-                       "#00ABE1"
-                       "#ccc")
-               :on-click
-               (fn card-click [e]
-                 (set-selected-cards! x y)
-                 (show-card-rank x y)
-                 (set-turn!)
-                 (debug-state))}]))])
+       [:g
+        [:rect {:width card-size
+                :height card-size
+                :x x
+                :y y
+                :fill (if (selected-card? x y)
+                        "#00ABE1"
+                        "#ccc")
+                :on-click
+                (fn card-click [e]
+                  (set-selected-cards! x y)
+                  (show-card-rank x y)
+                  (set-turn!)
+                  (debug-state))}]
+        [:text {:x (+ x (/ card-size 2))
+                :y (+ y (/ card-size 2))
+                :fill "yellow"
+                :font-size 0.25
+                :font-family "Verdana"
+                :text-anchor "middle"}
+         (if (selected-card? x y)
+           (show-card-rank x y))]]))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
