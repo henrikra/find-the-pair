@@ -44,7 +44,7 @@
     (swap! app-state assoc-in [:turn] 0)))
 
 (defn debug-state []
-  (prn (:board @app-state))
+  #_(prn (:board @app-state))
   #_(prn (:selected-cards @app-state))
   #_(prn (:turn @app-state)))
 
@@ -53,8 +53,16 @@
       (= [x y] (get-in @app-state [:selected-cards 1]))))
 
 (defn show-card-rank [x y]
-  (prn (get-in @app-state [:board y x]))
+  #_(prn (get-in @app-state [:board y x]))
   (get-in @app-state [:board y x]))
+
+(defn pair-found? []
+  (let [[[first-card-x first-card-y] [second-card-x second-card-y]] (:selected-cards @app-state)
+        first-card-rank (show-card-rank first-card-x first-card-y)
+        second-card-rank (show-card-rank second-card-x second-card-y)]
+    (if (or (nil? first-card-rank) (nil? second-card-rank))
+      false
+      (= first-card-rank second-card-rank))))
 
 (defn find-the-pair []
   [:div
@@ -79,6 +87,7 @@
                   (set-selected-cards! x y)
                   (show-card-rank x y)
                   (set-turn!)
+                  (prn (pair-found?))
                   (debug-state))}]
         [:text {:x (+ x (/ card-size 2))
                 :y (+ y (/ card-size 2))
