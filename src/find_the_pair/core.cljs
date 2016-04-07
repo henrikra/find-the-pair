@@ -4,16 +4,22 @@
 (enable-console-print!)
 
 (def card-size 0.95)
+(def grid-width 6)
+(def grid-height 6)
 
-(defn new-board [size]
-  (vec (repeat size (vec (repeat size 0)))))
+(defn init-cards [board]
+  board)
 
-(prn (new-board 4))
+(defn new-board [width height]
+  (let [board (vec (repeat height (vec (repeat width 0))))]
+    (init-cards board)))
+
+(prn (new-board grid-width grid-height))
 
 (defonce app-state
   (atom {:text "Find the pair!"
-         :board (new-board 4)
-         :selected-cards [[99 99] [99 99]]
+         :board (new-board grid-width grid-height)
+         :selected-cards [[nil nil] [nil nil]]
          :turn 0}))
 
 (defn card-value [row column]
@@ -22,20 +28,20 @@
 (defn turn-value []
   (get-in @app-state [:turn]))
 
-(defn set-selected-cards [row column]
+(defn set-selected-cards! [row column]
   (if (< (turn-value) 2)
     (swap! app-state assoc-in [:selected-cards (turn-value)] [row column])
-    (swap! app-state assoc-in [:selected-cards] [[99 99] [99 99]])))
+    (swap! app-state assoc-in [:selected-cards] [[nil nil] [nil nil]])))
 
-(defn set-turn []
+(defn set-turn! []
   (if (< (turn-value) 2)
     (swap! app-state assoc-in [:turn] (inc (get-in @app-state [:turn])))
     (swap! app-state assoc-in [:turn] 0)))
 
 (defn debug-state []
-  ;;(prn (:board @app-state))
+  (prn (:board @app-state))
   (prn (:selected-cards @app-state))
-  (prn (:turn @app-state)))
+  #_(prn (:turn @app-state)))
 
 (defn change-board-state [row column]
   (swap! app-state assoc-in [:board row column]
@@ -50,11 +56,11 @@
    [:h1 (:text @app-state)]
    (into
      [:svg
-      {:view-box "0 0 4 4"
+      {:view-box (str "0 0 " grid-width " " grid-height)
        :width 500
        :height 500}]
-     (for [column (range (count (:board @app-state)))
-           row (range (count (:board @app-state)))]
+     (for [column (range grid-width)
+           row (range grid-height)]
        [:rect {:x column
                :y row
                :width card-size
@@ -65,8 +71,9 @@
                :on-click
                (fn card-click [e]
                  ;;(prn "You clicked card" column row)
-                 (set-selected-cards row column)
-                 (set-turn)
+                 ()
+                 (set-selected-cards! row column)
+                 (set-turn!)
                  (change-board-state row column)
                  (debug-state))}]))])
 
