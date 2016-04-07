@@ -15,7 +15,7 @@
     (generate-board actual-cards width height)))
 
 (def grid-width 4)
-(def grid-height 6)
+(def grid-height 4)
 (def card-size 0.99)
 
 (def initial-app-state
@@ -62,17 +62,14 @@
   (remove-card! first-card-x first-card-y)
   (remove-card! second-card-x second-card-y))
 
-(defn pair-found? []
+(defn check-for-pair []
   (let [[[first-card-x first-card-y] [second-card-x second-card-y]] (:selected-cards @app-state)
         first-card-rank (show-card-rank first-card-x first-card-y)
         second-card-rank (show-card-rank second-card-x second-card-y)]
     (if (or (nil? first-card-rank) (nil? second-card-rank))
       false
       (if (= first-card-rank second-card-rank)
-        (do
-          (remove-found-pair first-card-x first-card-y second-card-x second-card-y)
-          true)
-        false))))
+        (remove-found-pair first-card-x first-card-y second-card-x second-card-y)))))
 
 (defn card-exists? [x y]
   (if (nil? (show-card-rank x y))
@@ -103,7 +100,7 @@
                     (set-selected-cards! x y)
                     (show-card-rank x y)
                     (set-turn!)
-                    (prn (pair-found?))
+                    (check-for-pair)
                     (debug-state))}]
           [:text {:x (+ x (/ card-size 2))
                   :y (+ y (/ card-size 2))
