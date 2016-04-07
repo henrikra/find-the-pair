@@ -3,17 +3,20 @@
 
 (enable-console-print!)
 
-(defn generate-board [cards width]
-  (partition width (shuffle cards)))
+(defn create-board [width height]
+  (vec (repeat height (vec (repeat width 0)))))
+
+(defn generate-board [cards width height]
+  (vec (map (fn [x y] (vec y)) (create-board width height) (partition width (shuffle cards)))))
 
 (defn init-board [width height]
-  (let [possible-cards (range 1 (+ (/ (* width height) 2) 1))
-        actual-cards (apply concat (map (fn [x] [x x]) possible-cards))]
-    (generate-board actual-cards width)))
+  (let [possible-card-ranks (range 1 (+ (/ (* width height) 2) 1))
+        actual-cards (vec (apply concat (map (fn [x] [x x]) possible-card-ranks)))]
+    (generate-board actual-cards width height)))
 
 (def grid-width 4)
 (def grid-height 3)
-(def card-size 0.95)
+(def card-size 0.98)
 
 (def initial-app-state
   {:text "Find the pair!"
@@ -21,16 +24,11 @@
    :selected-cards [[nil nil] [nil nil]]
    :turn 0})
 
-(prn (init-board grid-width grid-height))
-
 (defonce app-state
   (atom initial-app-state))
 
 
 ;; ===== UI =====
-
-(defn card-value [x y]
-  (get-in @app-state [:board x y]))
 
 (defn turn-value []
   (get-in @app-state [:turn]))
@@ -47,12 +45,16 @@
 
 (defn debug-state []
   (prn (:board @app-state))
-  (prn (:selected-cards @app-state))
+  #_(prn (:selected-cards @app-state))
   #_(prn (:turn @app-state)))
 
 (defn selected-card? [x y]
   (or (= [x y] (get-in @app-state [:selected-cards 0]))
       (= [x y] (get-in @app-state [:selected-cards 1]))))
+
+(defn show-card-rank [x y]
+  (prn (get-in @app-state [:board y x]))
+  (get-in @app-state [:board y x]))
 
 (defn find-the-pair []
   [:div
@@ -74,6 +76,7 @@
                :on-click
                (fn card-click [e]
                  (set-selected-cards! x y)
+                 (show-card-rank x y)
                  (set-turn!)
                  (debug-state))}]))])
 
