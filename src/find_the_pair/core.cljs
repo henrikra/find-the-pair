@@ -15,7 +15,7 @@
     (generate-board actual-cards width height)))
 
 (def grid-width 4)
-(def grid-height 4)
+(def grid-height 6)
 (def card-size 0.99)
 
 (def initial-app-state
@@ -44,7 +44,7 @@
     (swap! app-state assoc-in [:turn] 0)))
 
 (defn debug-state []
-  #_(prn (:board @app-state))
+  (prn (:board @app-state))
   #_(prn (:selected-cards @app-state))
   #_(prn (:turn @app-state)))
 
@@ -53,8 +53,14 @@
       (= [x y] (get-in @app-state [:selected-cards 1]))))
 
 (defn show-card-rank [x y]
-  #_(prn (get-in @app-state [:board y x]))
   (get-in @app-state [:board y x]))
+
+(defn remove-card! [x y]
+  (swap! app-state assoc-in [:board y x] nil))
+
+(defn remove-found-pair [first-card-x first-card-y second-card-x second-card-y]
+  (remove-card! first-card-x first-card-y)
+  (remove-card! second-card-x second-card-y))
 
 (defn pair-found? []
   (let [[[first-card-x first-card-y] [second-card-x second-card-y]] (:selected-cards @app-state)
@@ -62,7 +68,16 @@
         second-card-rank (show-card-rank second-card-x second-card-y)]
     (if (or (nil? first-card-rank) (nil? second-card-rank))
       false
-      (= first-card-rank second-card-rank))))
+      (if (= first-card-rank second-card-rank)
+        (do
+          (remove-found-pair first-card-x first-card-y second-card-x second-card-y)
+          true)
+        false))))
+
+(defn card-exists? [x y]
+  (if (nil? (show-card-rank x y))
+    false
+    true))
 
 (defn find-the-pair []
   [:div
@@ -74,29 +89,30 @@
        :height 500}]
      (for [x (range grid-width)
            y (range grid-height)]
-       [:g
-        [:rect {:width card-size
-                :height card-size
-                :x x
-                :y y
-                :fill (if (selected-card? x y)
-                        "#00ABE1"
-                        "#ccc")
-                :on-click
-                (fn card-click [e]
-                  (set-selected-cards! x y)
-                  (show-card-rank x y)
-                  (set-turn!)
-                  (prn (pair-found?))
-                  (debug-state))}]
-        [:text {:x (+ x (/ card-size 2))
-                :y (+ y (/ card-size 2))
-                :fill "yellow"
-                :font-size 0.25
-                :font-family "Verdana"
-                :text-anchor "middle"}
-         (if (selected-card? x y)
-           (show-card-rank x y))]]))])
+       (if (card-exists? x y)
+         [:g
+          [:rect {:width card-size
+                  :height card-size
+                  :x x
+                  :y y
+                  :fill (if (selected-card? x y)
+                          "#00ABE1"
+                          "#ccc")
+                  :on-click
+                  (fn card-click [e]
+                    (set-selected-cards! x y)
+                    (show-card-rank x y)
+                    (set-turn!)
+                    (prn (pair-found?))
+                    (debug-state))}]
+          [:text {:x (+ x (/ card-size 2))
+                  :y (+ y (/ card-size 2))
+                  :fill "yellow"
+                  :font-size 0.25
+                  :font-family "Verdana"
+                  :text-anchor "middle"}
+           (if (selected-card? x y)
+             (show-card-rank x y))]])))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
