@@ -3,13 +3,13 @@
 
 (enable-console-print!)
 
-(defn generate-board [cards]
-  (partition 2 (shuffle cards)))
+(defn generate-board [cards width]
+  (partition width (shuffle cards)))
 
 (defn init-board [width height]
   (let [possible-cards (range 1 (+ (/ (* width height) 2) 1))
         actual-cards (apply concat (map (fn [x] [x x]) possible-cards))]
-    (generate-board actual-cards)))
+    (generate-board actual-cards width)))
 
 (def grid-width 4)
 (def grid-height 3)
