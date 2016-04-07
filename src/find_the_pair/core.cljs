@@ -3,22 +3,15 @@
 
 (enable-console-print!)
 
-(defn fill-board-with-cards [board cards]
-  (map (fn [[x1 x2] [y1 y2]] [y1 y2]) board cards))
-
-(defn generate-cards [width height]
-  (let [pair-amount (range 1 (+ (/ (* width height) 2) 1))
-        card-numbers (apply concat (map (fn [x] [x x]) pair-amount))
-        card-numbers-partitioned (partition 2 (shuffle card-numbers))]
-    card-numbers-partitioned))
-
-(defn generate-board [width height]
-  (vec (repeat height (vec (repeat width 0)))))
+(defn generate-board [cards]
+  (partition 2 (shuffle cards)))
 
 (defn init-board [width height]
-  (fill-board-with-cards (generate-board width height) (generate-cards width height)))
+  (let [possible-cards (range 1 (+ (/ (* width height) 2) 1))
+        actual-cards (apply concat (map (fn [x] [x x]) possible-cards))]
+    (generate-board actual-cards)))
 
-(def grid-width 2)
+(def grid-width 4)
 (def grid-height 3)
 (def card-size 0.95)
 
@@ -27,6 +20,8 @@
    :board (init-board grid-width grid-height)
    :selected-cards [[nil nil] [nil nil]]
    :turn 0})
+
+(prn (init-board grid-width grid-height))
 
 (defonce app-state
   (atom initial-app-state))
@@ -78,7 +73,6 @@
                        "#ccc")
                :on-click
                (fn card-click [e]
-                 ()
                  (set-selected-cards! x y)
                  (set-turn!)
                  (debug-state))}]))])
