@@ -74,7 +74,8 @@
 
 (defn remove-found-pair [first-card-x first-card-y second-card-x second-card-y]
   (remove-card! first-card-x first-card-y)
-  (remove-card! second-card-x second-card-y))
+  (remove-card! second-card-x second-card-y)
+  (reset-flipped-cards!))
 
 (defn pair? [first-card second-card]
   (= first-card second-card))
