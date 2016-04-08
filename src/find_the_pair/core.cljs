@@ -66,28 +66,25 @@
   (or (= [x y] (flipped-card 0))
       (= [x y] (flipped-card 1))))
 
-(defn card-rank [x y]
-  (get-in @app-state [:board y x]))
+(defn card-rank
+  ([x y] (get-in @app-state [:board y x]))
+  ([[x y]] (get-in @app-state [:board y x])))
 
-(defn remove-card! [x y]
+(defn remove-card! [[x y]]
   (swap! app-state assoc-in [:board y x] nil))
 
-(defn remove-found-pair [first-card-x first-card-y second-card-x second-card-y]
-  (remove-card! first-card-x first-card-y)
-  (remove-card! second-card-x second-card-y)
+(defn remove-found-pair []
+  (remove-card! (flipped-card 0))
+  (remove-card! (flipped-card 1))
   (reset-flipped-cards!))
 
-(defn pair? [first-card second-card]
-  (= first-card second-card))
+(defn found-pair? []
+  (= (card-rank (flipped-card 0))
+     (card-rank (flipped-card 1))))
 
 (defn check-for-pair []
-  (let [[[first-card-x first-card-y] [second-card-x second-card-y]]
-        (:flipped-cards @app-state)
-        first-card (card-rank first-card-x first-card-y)
-        second-card (card-rank second-card-x second-card-y)]
-    (if (and (both-cards-flipped?)
-             (pair? first-card second-card))
-      (remove-found-pair first-card-x first-card-y second-card-x second-card-y))))
+  (if (and (both-cards-flipped?) (found-pair?))
+    (remove-found-pair)))
 
 (defn card [x y]
   [:g
@@ -101,7 +98,6 @@
            :on-click
            (fn card-click [e]
              (set-flipped-cards x y)
-             (card-rank x y)
              (check-for-pair)
              (debug-state))}]
    [:text {:x (+ x (/ card-size 2))
