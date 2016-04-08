@@ -35,18 +35,27 @@
 
 ;; ===== UI =====
 
-(defn turn-value []
+(defn turn []
   (get-in @app-state [:turn]))
 
-(defn set-selected-cards! [x y]
-  (if (< (turn-value) 2)
-    (swap! app-state assoc-in [:flipped-cards (turn-value)] [x y])
-    (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]])))
+(defn set-flipped-card! [x y]
+  (swap! app-state assoc-in [:flipped-cards (turn)] [x y]))
 
-(defn set-turn! []
-  (if (< (turn-value) 2)
-    (swap! app-state assoc-in [:turn] (inc (get-in @app-state [:turn])))
-    (swap! app-state assoc-in [:turn] 0)))
+(defn reset-flipped-cards! []
+  (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
+
+(defn set-flipped-cards [x y]
+  (if (< (turn) 2)
+    (set-flipped-card! x y)
+    (reset-flipped-cards!)))
+
+(defn set-turn! [new-value]
+  (swap! app-state assoc-in [:turn] new-value))
+
+(defn set-turn []
+  (if (< (turn) 2)
+    (set-turn! (inc (turn)))
+    (set-turn! 0)))
 
 (defn debug-state []
   (prn (:board @app-state))
@@ -90,9 +99,9 @@
                    "#ccc")
            :on-click
            (fn card-click [e]
-             (set-selected-cards! x y)
+             (set-flipped-cards x y)
              (card-rank x y)
-             (set-turn!)
+             (set-turn)
              (check-for-pair)
              (debug-state))}]
    [:text {:x (+ x (/ card-size 2))
