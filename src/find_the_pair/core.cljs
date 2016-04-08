@@ -26,8 +26,7 @@
 (def initial-app-state
   {:text "Find the pair!"
    :board (init-board grid-width grid-height)
-   :flipped-cards [[nil nil] [nil nil]]
-   :turn 0})
+   :flipped-cards [[nil nil] [nil nil]]})
 
 (defonce app-state
   (atom initial-app-state))
@@ -35,35 +34,33 @@
 
 ;; ===== UI =====
 
-(defn turn []
-  (get-in @app-state [:turn]))
-
-(defn set-flipped-card! [x y]
-  (swap! app-state assoc-in [:flipped-cards (turn)] [x y]))
-
 (defn reset-flipped-cards! []
   (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
 
-(defn set-flipped-cards [x y]
-  (if (< (turn) 2)
-    (set-flipped-card! x y)
-    (reset-flipped-cards!)))
-
-(defn set-turn! [new-value]
-  (swap! app-state assoc-in [:turn] new-value))
-
-(defn set-turn []
-  (if (< (turn) 2)
-    (set-turn! (inc (turn)))
-    (set-turn! 0)))
-
-(defn debug-state []
-  (prn (:board @app-state))
-  (prn (:flipped-cards @app-state))
-  #_(prn (:turn @app-state)))
-
 (defn flipped-card [index]
   (get-in @app-state [:flipped-cards index]))
+
+(defn card-flipped? [index]
+  (not (every? nil? (flipped-card index))))
+
+(defn set-flipped-card! [x y]
+  (if (card-flipped? 0)
+    (swap! app-state assoc-in [:flipped-cards 1] [x y])
+    (swap! app-state assoc-in [:flipped-cards 0] [x y])))
+
+(defn both-cards-flipped? []
+  (and (= (card-flipped? 0)
+          (card-flipped? 1)
+          true)))
+
+(defn set-flipped-cards [x y]
+  (if (both-cards-flipped?)
+    (reset-flipped-cards!)
+    (set-flipped-card! x y)))
+
+(defn debug-state []
+  #_(prn (:board @app-state))
+  #_(prn (:flipped-cards @app-state)))
 
 (defn flipped-card? [x y]
   (or (= [x y] (flipped-card 0))
@@ -101,7 +98,6 @@
            (fn card-click [e]
              (set-flipped-cards x y)
              (card-rank x y)
-             (set-turn)
              (check-for-pair)
              (debug-state))}]
    [:text {:x (+ x (/ card-size 2))
