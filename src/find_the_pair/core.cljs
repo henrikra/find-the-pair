@@ -76,14 +76,17 @@
   (remove-card! first-card-x first-card-y)
   (remove-card! second-card-x second-card-y))
 
+(defn pair? [first-card second-card]
+  (= first-card second-card))
+
 (defn check-for-pair []
-  (let [[[first-card-x first-card-y] [second-card-x second-card-y]] (:flipped-cards @app-state)
-        first-card-rank (card-rank first-card-x first-card-y)
-        second-card-rank (card-rank second-card-x second-card-y)]
-    (if (or (nil? first-card-rank) (nil? second-card-rank))
-      false
-      (if (= first-card-rank second-card-rank)
-        (remove-found-pair first-card-x first-card-y second-card-x second-card-y)))))
+  (let [[[first-card-x first-card-y] [second-card-x second-card-y]]
+        (:flipped-cards @app-state)
+        first-card (card-rank first-card-x first-card-y)
+        second-card (card-rank second-card-x second-card-y)]
+    (if (and (both-cards-flipped?)
+             (pair? first-card second-card))
+      (remove-found-pair first-card-x first-card-y second-card-x second-card-y))))
 
 (defn card [x y]
   [:g
