@@ -46,9 +46,34 @@
 (defn card-flipped? [index]
   (not (every? nil? (flipped-card index))))
 
+(defn remove-card! [[x y]]
+  (swap! app-state assoc-in [:board y x] nil))
+
+(defn remove-found-pair []
+  (remove-card! (flipped-card 0))
+  (remove-card! (flipped-card 1))
+  (reset-flipped-cards!))
+
+(defn card-rank
+  ([x y] (get-in @app-state [:board y x]))
+  ([[x y]] (get-in @app-state [:board y x])))
+
+(defn found-pair? []
+  (= (card-rank (flipped-card 0))
+     (card-rank (flipped-card 1))))
+
+(defn check-for-pair []
+  (js/setTimeout #(if (found-pair?)
+                    (remove-found-pair)
+                    (reset-flipped-cards!)) 1000))
+
+(defn second-card-flipped [x y]
+  (swap! app-state assoc-in [:flipped-cards 1] [x y])
+  (check-for-pair))
+
 (defn set-flipped-card! [x y]
   (if (card-flipped? 0)
-    (swap! app-state assoc-in [:flipped-cards 1] [x y])
+    (second-card-flipped x y)
     (swap! app-state assoc-in [:flipped-cards 0] [x y])))
 
 (defn both-cards-flipped? []
@@ -57,8 +82,7 @@
           true)))
 
 (defn set-flipped-cards [x y]
-  (if (both-cards-flipped?)
-    (reset-flipped-cards!)
+  (if (not (both-cards-flipped?))
     (set-flipped-card! x y)))
 
 (defn debug-state []
@@ -68,26 +92,6 @@
 (defn flipped-card? [x y]
   (or (= [x y] (flipped-card 0))
       (= [x y] (flipped-card 1))))
-
-(defn card-rank
-  ([x y] (get-in @app-state [:board y x]))
-  ([[x y]] (get-in @app-state [:board y x])))
-
-(defn remove-card! [[x y]]
-  (swap! app-state assoc-in [:board y x] nil))
-
-(defn remove-found-pair []
-  (remove-card! (flipped-card 0))
-  (remove-card! (flipped-card 1))
-  (reset-flipped-cards!))
-
-(defn found-pair? []
-  (= (card-rank (flipped-card 0))
-     (card-rank (flipped-card 1))))
-
-(defn check-for-pair []
-  (if (and (both-cards-flipped?) (found-pair?))
-    (remove-found-pair)))
 
 (defn card [x y]
   [:g
@@ -101,7 +105,6 @@
            :on-click
            (fn card-click [e]
              (set-flipped-cards x y)
-             (check-for-pair)
              (debug-state))}]
    [:text {:x (+ x (/ card-size 2))
            :y (+ y (/ card-size 2))
