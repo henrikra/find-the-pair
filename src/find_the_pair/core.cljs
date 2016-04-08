@@ -3,19 +3,22 @@
 
 (enable-console-print!)
 
-(defn create-board [width height]
-  (vec (repeat height (vec (repeat width 0)))))
+(defn generate-board [cards width]
+  (vec (map #(vec %) (partition width (shuffle cards)))))
 
-(defn generate-board [cards width height]
-  (vec (map (fn [x y] (vec y)) (create-board width height) (partition width (shuffle cards)))))
+(defn duplicate [card]
+  [card card])
+
+(defn max-card [width height]
+  (+ (/ (* width height) 2) 1))
 
 (defn init-board [width height]
-  (let [possible-card-ranks (range 1 (+ (/ (* width height) 2) 1))
-        actual-cards (vec (apply concat (map (fn [x] [x x]) possible-card-ranks)))]
-    (generate-board actual-cards width height)))
+  (let [possible-cards (range 1 (max-card width height))
+        all-cards (apply concat (map duplicate possible-cards))]
+    (generate-board all-cards width)))
 
 (def grid-width 4)
-(def grid-height 4)
+(def grid-height 3)
 (def card-size 0.99)
 
 (def initial-app-state
