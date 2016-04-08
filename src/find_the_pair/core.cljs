@@ -37,6 +37,9 @@
 (defn reset-flipped-cards! []
   (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
 
+(defn reset-board! []
+  (swap! app-state assoc-in [:board] (init-board grid-width grid-height)))
+
 (defn flipped-card [index]
   (get-in @app-state [:flipped-cards index]))
 
@@ -104,7 +107,6 @@
            :y (+ y (/ card-size 2))
            :fill "yellow"
            :font-size 0.25
-           :font-family "Verdana"
            :text-anchor "middle"}
     (if (flipped-card? x y)
       (card-rank x y))]])
@@ -115,6 +117,12 @@
 (defn find-the-pair []
   [:div
    [:h1 (:text @app-state)]
+   [:p
+    [:button {:on-click
+              (fn new-game-click [e]
+                (reset-flipped-cards!)
+                (reset-board!))}
+     "New game"]]
    (into
      [:svg
       {:view-box (str "0 0 " grid-width " " grid-height)
