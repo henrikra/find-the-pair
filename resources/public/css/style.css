@@ -29,3 +29,7 @@ rect:hover {
   fill: #95a5a6;
   transform: translate(0.01pt, 0.01pt);
 }
+
+text {
+   font-family: FontAwesome;
+}
