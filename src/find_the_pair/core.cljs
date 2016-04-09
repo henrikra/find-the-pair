@@ -36,7 +36,7 @@
 ;; ===== UI =====
 
 (defn reduce-points! []
-  (swap! app-state assoc-in [:points] (dec (get-in @app-state [:points]))))
+  (swap! app-state assoc-in [:points] (dec (:points @app-state))))
 
 (defn reset-flipped-cards! []
   (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
@@ -57,7 +57,7 @@
   (swap! app-state assoc-in [:board y x] nil))
 
 (defn add-points! []
-  (swap! app-state assoc-in [:points] (+ (get-in @app-state [:points]) 4)))
+  (swap! app-state assoc-in [:points] (+ (:points @app-state) 4)))
 
 (defn success []
   (add-points!)
@@ -153,7 +153,7 @@
            y (range grid-height)]
        (if (card-exists? x y)
          (card x y))))
-   [:p "Points: " (get-in @app-state [:points])]])
+   [:p "Points: " (:points @app-state)]])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
