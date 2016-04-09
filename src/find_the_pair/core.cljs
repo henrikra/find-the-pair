@@ -1,5 +1,6 @@
 (ns find-the-pair.core
-  (:require [reagent.core :as reagent :refer [atom]]))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [clojure.string :as str]))
 
 (enable-console-print!)
 
@@ -27,7 +28,9 @@
   {:text "Find the pair!"
    :board (init-board grid-width grid-height)
    :flipped-cards [[nil nil] [nil nil]]
-   :points 0})
+   :points 0
+   :board-width grid-width
+   :board-height grid-height})
 
 (defonce app-state
   (atom initial-app-state))
@@ -42,7 +45,7 @@
   (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
 
 (defn reset-board! []
-  (swap! app-state assoc-in [:board] (init-board grid-width grid-height)))
+  (swap! app-state assoc-in [:board] (init-board (:board-width @app-state) (:board-height @app-state))))
 
 (defn reset-points! []
   (swap! app-state assoc :points 0))
@@ -134,6 +137,17 @@
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
 
+(defn set-board-width! [new-value]
+  (swap! app-state assoc :board-width new-value))
+
+(defn set-board-height! [new-value]
+  (swap! app-state assoc :board-height new-value))
+
+(defn set-board-dimensions [selected-dimensions]
+  (let [coordinates (str/split selected-dimensions "x")]
+    (set-board-width! (int (first coordinates)))
+    (set-board-height! (int (second coordinates)))))
+
 (defn find-the-pair []
   [:div
    [:h1 (:text @app-state)]
@@ -144,13 +158,26 @@
                 (reset-board!)
                 (reset-points!))}
      "New game"]]
+   [:p
+    [:select {:on-change
+              (fn [x]
+                (set-board-dimensions (.. x -target -value))
+                (reset-flipped-cards!)
+                (reset-board!)
+                (reset-points!))}
+     [:option {:value "3x2"} "Supa easy"]
+     [:option {:value "4x3"} "Easy"]
+     [:option {:value "4x4" :selected true} "Medium"]
+     [:option {:value "6x5"} "Hard"]
+     [:option {:value "8x7"} "Nightmare"]
+     [:option {:value "10x10"} "Hell"]]]
    (into
      [:svg
-      {:view-box (str "0 0 " grid-width " " grid-height)
+      {:view-box (str "0 0 " (:board-width @app-state) " " (:board-height @app-state))
        :width 500
        :height 500}]
-     (for [x (range grid-width)
-           y (range grid-height)]
+     (for [x (range (:board-width @app-state))
+           y (range (:board-height @app-state))]
        (if (card-exists? x y)
          (card x y))))
    [:p "Points: " (:points @app-state)]])
