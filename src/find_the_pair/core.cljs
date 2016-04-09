@@ -20,8 +20,8 @@
     (generate-board all-cards width)))
 
 (def grid-width 4)
-(def grid-height 3)
-(def card-size 0.99)
+(def grid-height 4)
+(def card-size 0.97)
 
 (def initial-app-state
   {:text "Find the pair!"
@@ -100,15 +100,17 @@
            :x x
            :y y
            :fill (if (flipped-card? x y)
-                   "#00ABE1"
-                   "#ccc")
+                   "#1abc9c"
+                   "#bdc3c7")
+           :rx 0.1
+           :ry 0.1
            :on-click
            (fn card-click [e]
              (set-flipped-cards x y)
              (debug-state))}]
    [:text {:x (+ x (/ card-size 2))
            :y (+ y (/ card-size 2))
-           :fill "yellow"
+           :fill "#fff"
            :font-size 0.25
            :text-anchor "middle"}
     (if (flipped-card? x y)
