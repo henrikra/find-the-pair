@@ -26,7 +26,8 @@
 (def initial-app-state
   {:text "Find the pair!"
    :board (init-board grid-width grid-height)
-   :flipped-cards [[nil nil] [nil nil]]})
+   :flipped-cards [[nil nil] [nil nil]]
+   :points 0})
 
 (defonce app-state
   (atom initial-app-state))
@@ -34,11 +35,17 @@
 
 ;; ===== UI =====
 
+(defn reduce-points! []
+  (swap! app-state assoc-in [:points] (dec (get-in @app-state [:points]))))
+
 (defn reset-flipped-cards! []
   (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
 
 (defn reset-board! []
   (swap! app-state assoc-in [:board] (init-board grid-width grid-height)))
+
+(defn reset-points! []
+  (swap! app-state assoc-in [:points] 0))
 
 (defn flipped-card [index]
   (get-in @app-state [:flipped-cards index]))
@@ -49,7 +56,11 @@
 (defn remove-card! [[x y]]
   (swap! app-state assoc-in [:board y x] nil))
 
-(defn remove-found-pair []
+(defn add-points! []
+  (swap! app-state assoc-in [:points] (+ (get-in @app-state [:points]) 4)))
+
+(defn success []
+  (add-points!)
   (remove-card! (flipped-card 0))
   (remove-card! (flipped-card 1))
   (reset-flipped-cards!))
@@ -62,10 +73,14 @@
   (= (card-rank (flipped-card 0))
      (card-rank (flipped-card 1))))
 
+(defn mistake []
+  (reduce-points!)
+  (reset-flipped-cards!))
+
 (defn check-for-pair []
   (js/setTimeout #(if (found-pair?)
-                    (remove-found-pair)
-                    (reset-flipped-cards!)) 1000))
+                    (success)
+                    (mistake)) 1000))
 
 (defn second-card-flipped [x y]
   (swap! app-state assoc-in [:flipped-cards 1] [x y])
@@ -126,7 +141,8 @@
     [:button {:on-click
               (fn new-game-click [e]
                 (reset-flipped-cards!)
-                (reset-board!))}
+                (reset-board!)
+                (reset-points!))}
      "New game"]]
    (into
      [:svg
@@ -136,7 +152,8 @@
      (for [x (range grid-width)
            y (range grid-height)]
        (if (card-exists? x y)
-         (card x y))))])
+         (card x y))))
+   [:p "Points: " (get-in @app-state [:points])]])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
