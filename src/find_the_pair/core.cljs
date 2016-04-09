@@ -39,10 +39,16 @@
   (swap! app-state assoc :points (dec (:points @app-state))))
 
 (defn reset-flipped-cards! []
-  (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
+  (swap! app-state assoc :flipped-cards [[nil nil] [nil nil]]))
+
+(defn board-width []
+  (:board-width @app-state))
+
+(defn board-height []
+  (:board-height @app-state))
 
 (defn reset-board! []
-  (swap! app-state assoc-in [:board] (init-board (:board-width @app-state) (:board-height @app-state))))
+  (swap! app-state assoc :board (init-board (board-width) (board-height))))
 
 (defn reset-points! []
   (swap! app-state assoc :points 0))
@@ -163,6 +169,7 @@
               (fn difficulty-change [x]
                 (set-board-dimensions (.. x -target -value))
                 (reset-game))}
+     [:option {:value "2x2"} "Drunk"]
      [:option {:value "3x2"} "Supa easy"]
      [:option {:value "4x3"} "Easy"]
      [:option {:value "4x4" :selected true} "Medium"]
@@ -171,11 +178,11 @@
      [:option {:value "10x10"} "Hell"]]]
    (into
      [:svg
-      {:view-box (str "0 0 " (:board-width @app-state) " " (:board-height @app-state))
+      {:view-box (str "0 0 " (board-width) " " (board-height))
        :width 500
        :height 500}]
-     (for [x (range (:board-width @app-state))
-           y (range (:board-height @app-state))]
+     (for [x (range (board-width))
+           y (range (board-height))]
        (if (card-exists? x y)
          (card x y))))
    [:p "Points: " (:points @app-state)]])
@@ -187,5 +194,4 @@
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
-  ;;(swap! app-state assoc-in [:text] "Siili")
   )
