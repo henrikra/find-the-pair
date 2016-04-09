@@ -36,7 +36,7 @@
 ;; ===== UI =====
 
 (defn reduce-points! []
-  (swap! app-state assoc-in [:points] (dec (:points @app-state))))
+  (swap! app-state assoc :points (dec (:points @app-state))))
 
 (defn reset-flipped-cards! []
   (swap! app-state assoc-in [:flipped-cards] [[nil nil] [nil nil]]))
@@ -45,7 +45,7 @@
   (swap! app-state assoc-in [:board] (init-board grid-width grid-height)))
 
 (defn reset-points! []
-  (swap! app-state assoc-in [:points] 0))
+  (swap! app-state assoc :points 0))
 
 (defn flipped-card [index]
   (get-in @app-state [:flipped-cards index]))
@@ -57,7 +57,7 @@
   (swap! app-state assoc-in [:board y x] nil))
 
 (defn add-points! []
-  (swap! app-state assoc-in [:points] (+ (:points @app-state) 4)))
+  (swap! app-state assoc :points (+ (:points @app-state) 4)))
 
 (defn success []
   (add-points!)
