@@ -21,7 +21,7 @@
 
 (def grid-width 4)
 (def grid-height 4)
-(def card-size 0.97)
+(def card-size 0.96)
 
 (def initial-app-state
   {:text "Find the pair!"

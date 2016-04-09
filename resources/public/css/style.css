@@ -20,8 +20,12 @@ button:hover {
   background: #16a085;
 }
 
+rect {
+  transition: all 0.3s;
+}
+
 rect:hover {
   cursor: pointer;
   fill: #95a5a6;
-  transition: all 0.5s;
+  transform: translate(0.01pt, 0.01pt);
 }
