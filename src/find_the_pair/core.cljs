@@ -9,15 +9,12 @@
          #(vec %)
          (partition width (shuffle cards)))))
 
-(defn duplicate [card]
-  [card card])
-
 (defn max-card [width height]
   (+ (/ (* width height) 2) 1))
 
 (defn init-board [width height]
   (let [possible-cards (range 1 (max-card width height))
-        all-cards (apply concat (map duplicate possible-cards))]
+        all-cards (flatten (repeat 2 possible-cards))]
     (generate-board all-cards width)))
 
 (def grid-width 4)
@@ -143,10 +140,15 @@
 (defn set-board-height! [new-value]
   (swap! app-state assoc :board-height new-value))
 
-(defn set-board-dimensions [selected-dimensions]
-  (let [coordinates (str/split selected-dimensions "x")]
-    (set-board-width! (int (first coordinates)))
-    (set-board-height! (int (second coordinates)))))
+(defn set-board-dimensions [new-dimensions]
+  (let [[new-width new-height] (str/split new-dimensions "x")]
+    (set-board-width! (int new-width))
+    (set-board-height! (int new-height))))
+
+(defn reset-game []
+  (reset-flipped-cards!)
+  (reset-board!)
+  (reset-points!))
 
 (defn find-the-pair []
   [:div
@@ -154,17 +156,13 @@
    [:p
     [:button {:on-click
               (fn new-game-click [e]
-                (reset-flipped-cards!)
-                (reset-board!)
-                (reset-points!))}
+                (reset-game))}
      "New game"]]
    [:p
     [:select {:on-change
-              (fn [x]
+              (fn difficulty-change [x]
                 (set-board-dimensions (.. x -target -value))
-                (reset-flipped-cards!)
-                (reset-board!)
-                (reset-points!))}
+                (reset-game))}
      [:option {:value "3x2"} "Supa easy"]
      [:option {:value "4x3"} "Easy"]
      [:option {:value "4x4" :selected true} "Medium"]
