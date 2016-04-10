@@ -145,11 +145,6 @@
   [:div
    [:h1 "Find the pair!"]
    [:p
-    [:button {:on-click
-              (fn new-game-click [e]
-                (reset-game))}
-     "New game"]]
-   [:p
     [:label "Difficulty: "]
     [:select {:on-change
               (fn difficulty-change [x]
@@ -162,6 +157,11 @@
      [:option {:value "6x5"} "Hard"]
      [:option {:value "8x7"} "Nightmare"]
      [:option {:value "10x10"} "Hell"]]]
+   [:p
+    [:button {:on-click
+              (fn new-game-click [e]
+                (reset-game))}
+     "New game"]]
    (if (game-won?)
      [:div {:class "victory"}
       (if (> 0 (:points @app-state))
