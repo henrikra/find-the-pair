@@ -124,6 +124,28 @@
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
 
+(defn flip-card [x y]
+  (let [card-width (/ 100 (board-width))
+        card-height (/ 500 (board-height))]
+    [:div {:class "container"
+           :style {:width (str card-width "%")
+                   :height (str card-height "px")}}
+    [:div {:class (if (flipped-card? x y)
+                     "card flipped"
+                     "card")
+           :on-click
+           (fn card-click [e]
+             (if (and (card-exists? x y) (not (flipped-card? x y)))
+               (set-flipped-cards x y)
+               (debug-state)))}
+     [:figure {:class "front"
+               :style (if (not (card-exists? x y))
+                        {:background "#ecf0f1"})}]
+     [:figure {:class "back"}
+      (if (flipped-card? x y)
+        [:i {:class (str "fa " (card-icon x y))
+             :style {:font-size (str (* card-width 1.75) "px")}}])]]]))
+
 (defn set-board-width! [new-value]
   (swap! app-state assoc :board-width new-value))
 
@@ -171,6 +193,15 @@
       [:p "Points: "
        [:span {:class "victory__points"} (:points @app-state)]]]
      (into
+       [:div {:class "board"}]
+       (for [x (range (board-width))
+             y (range (board-height))]
+         (flip-card x y)
+         #_(if (card-exists? x y)
+           (flip-card x y))))
+
+
+     #_(into
        [:svg
         {:view-box (str "0 0 " (board-width) " " (board-height))
          :width 500
@@ -178,7 +209,7 @@
        (for [x (range (board-width))
              y (range (board-height))]
          (if (card-exists? x y)
-           (card x y)))))])
+           #_(card x y)))))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
