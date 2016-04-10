@@ -24,18 +24,6 @@ button:hover {
   background: #16a085;
 }
 
-rect {
-  transition: all 0.3s;
-}
-
-rect:hover {
-
-}
-
-text {
-   font-family: FontAwesome;
-}
-
 @keyframes hovering {
   0% {
     transform: translateY(0px);
@@ -64,9 +52,7 @@ text {
   font-size: 24px;
 }
 
-.container {
-  width: 150px;
-  height: 150px;
+.card-container {
   position: relative;
   perspective: 800px;
   float: left;
@@ -89,7 +75,6 @@ text {
   position: absolute;
   transform-style: preserve-3d;
   transition: transform 0.5s;
-  cursor: pointer;
 }
 
 .card figure {
@@ -107,11 +92,11 @@ text {
   border-radius: 10px;
 }
 
-.card .front {
+.card .back {
   background: #bdc3c7;
 }
 
-.card .back {
+.card .front {
   background: #1abc9c;
   transform: rotateY(180deg);
 }

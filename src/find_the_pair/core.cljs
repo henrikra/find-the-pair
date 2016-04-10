@@ -97,37 +97,13 @@
 (defn card-icon [x y]
   (get-in @app-state [:icons (card-rank x y)] ))
 
-(defn card [x y]
-  (let [card-size 0.96]
-    [:g
-     [:rect {:width card-size
-             :height card-size
-             :x x
-             :y y
-             :fill (if (flipped-card? x y)
-                     "#1abc9c"
-                     "#bdc3c7")
-             :rx 0.1
-             :ry 0.1
-             :on-click
-             (fn card-click [e]
-               (set-flipped-cards x y)
-               (debug-state))}]
-     [:text {:x (+ x (/ card-size 2))
-             :y (+ y (/ card-size 2))
-             :fill "#fff"
-             :font-size 0.25
-             :text-anchor "middle"}
-      (if (flipped-card? x y)
-        (card-icon x y))]]))
-
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
 
 (defn flip-card [x y]
   (let [card-width (/ 100 (board-width))
         card-height (/ 500 (board-height))]
-    [:div {:class "container"
+    [:div {:class "card-container"
            :style {:width (str card-width "%")
                    :height (str card-height "px")}}
     [:div {:class (if (flipped-card? x y)
@@ -137,11 +113,13 @@
            (fn card-click [e]
              (if (and (card-exists? x y) (not (flipped-card? x y)))
                (set-flipped-cards x y)
-               (debug-state)))}
-     [:figure {:class "front"
+               (debug-state)))
+           :style (if (card-exists? x y)
+                    {:cursor "pointer"})}
+     [:figure {:class "back"
                :style (if (not (card-exists? x y))
                         {:background "#ecf0f1"})}]
-     [:figure {:class "back"}
+     [:figure {:class "front"}
       (if (flipped-card? x y)
         [:i {:class (str "fa " (card-icon x y))
              :style {:font-size (str (* card-width 1.75) "px")}}])]]]))
@@ -179,13 +157,13 @@
      [:option {:value "6x5"} "Hard"]
      [:option {:value "8x7"} "Nightmare"]
      [:option {:value "10x10"} "Hell"]]]
-   [:p
-    [:button {:on-click
-              (fn new-game-click [e]
-                (reset-game))}
-     "New game"]]
    (if (game-won?)
      [:div {:class "victory"}
+      [:p
+       [:button {:on-click
+                 (fn new-game-click [e]
+                   (reset-game))}
+        "New game"]]
       (if (> 0 (:points @app-state))
         [:i {:class "victory__icon fa fa-thumbs-down"}]
         [:i {:class "victory__icon fa fa-thumbs-up"}])
@@ -198,18 +176,7 @@
              y (range (board-height))]
          (flip-card x y)
          #_(if (card-exists? x y)
-           (flip-card x y))))
-
-
-     #_(into
-       [:svg
-        {:view-box (str "0 0 " (board-width) " " (board-height))
-         :width 500
-         :height 500}]
-       (for [x (range (board-width))
-             y (range (board-height))]
-         (if (card-exists? x y)
-           #_(card x y)))))])
+           (flip-card x y)))))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
