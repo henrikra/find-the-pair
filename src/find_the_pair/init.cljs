@@ -19,11 +19,13 @@
 
 (def board-width 4)
 (def board-height 4)
+(def flipped-cards [[nil nil] [nil nil]])
+(def points 0)
 
 (def app-state
   {:board (board board-width board-height)
-   :flipped-cards [[nil nil] [nil nil]]
-   :points 0
+   :flipped-cards flipped-cards
+   :points points
    :board-width board-width
    :board-height board-height
    :icons (icons)})

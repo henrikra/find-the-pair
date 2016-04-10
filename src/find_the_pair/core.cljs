@@ -9,14 +9,14 @@
 
 ;; ===== UI =====
 
-(defn shuffle-icons! []
+(defn reset-icons! []
   (swap! app-state assoc :icons (init/icons)))
 
 (defn reduce-points! []
   (swap! app-state assoc :points (dec (:points @app-state))))
 
 (defn reset-flipped-cards! []
-  (swap! app-state assoc :flipped-cards [[nil nil] [nil nil]]))
+  (swap! app-state assoc :flipped-cards init/flipped-cards))
 
 (defn board-width []
   (:board-width @app-state))
@@ -28,7 +28,7 @@
   (swap! app-state assoc :board (init/board (board-width) (board-height))))
 
 (defn reset-points! []
-  (swap! app-state assoc :points 0))
+  (swap! app-state assoc :points init/points))
 
 (defn flipped-card [index]
   (get-in @app-state [:flipped-cards index]))
@@ -136,7 +136,7 @@
   (reset-flipped-cards!)
   (reset-board!)
   (reset-points!)
-  (shuffle-icons!))
+  (reset-icons!))
 
 (defn find-the-pair []
   [:div
