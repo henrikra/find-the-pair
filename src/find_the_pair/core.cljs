@@ -103,12 +103,12 @@
 (defn flip-card [x y]
   (let [card-width (/ 100 (board-width))
         card-height (/ 500 (board-height))]
-    [:div {:class "card-container"
+    [:div {:class "card"
            :style {:width (str card-width "%")
                    :height (str card-height "px")}}
     [:div {:class (if (flipped-card? x y)
-                     "card flipped"
-                     "card")
+                     "card__sides card__sides--flipped"
+                     "card__sides")
            :on-click
            (fn card-click [e]
              (if (and (card-exists? x y) (not (flipped-card? x y)))
@@ -116,10 +116,10 @@
                (debug-state)))
            :style (if (card-exists? x y)
                     {:cursor "pointer"})}
-     [:figure {:class "back"
+     [:figure {:class "card__side card__back"
                :style (if (not (card-exists? x y))
                         {:background "#ecf0f1"})}]
-     [:figure {:class "front"}
+     [:figure {:class "card__side card__front"}
       (if (flipped-card? x y)
         [:i {:class (str "fa " (card-icon x y))
              :style {:font-size (str (* card-width 1.75) "px")}}])]]]))
@@ -160,7 +160,8 @@
    (if (game-won?)
      [:div {:class "victory"}
       [:p
-       [:button {:on-click
+       [:button {:class "victory__new-game"
+                 :on-click
                  (fn new-game-click [e]
                    (reset-game))}
         "New game"]]
