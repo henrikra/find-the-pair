@@ -1,44 +1,16 @@
 (ns find-the-pair.core
   (:require [reagent.core :as reagent :refer [atom]]
             [clojure.string :as str]
-            [find-the-pair.misc :as misc]))
+            [find-the-pair.init :as init]))
 
 (enable-console-print!)
 
-(defn generate-board [cards width]
-  (vec (map
-         #(vec %)
-         (partition width (shuffle cards)))))
-
-(defn max-card [width height]
-  (+ (/ (* width height) 2) 1))
-
-(defn init-board [width height]
-  (let [possible-cards (range 1 (max-card width height))
-        all-cards (flatten (repeat 2 possible-cards))]
-    (generate-board all-cards width)))
-
-(def grid-width 4)
-(def grid-height 4)
-(def card-size 0.96)
-
-(def initial-app-state
-  {:text "Find the pair!"
-   :board (init-board grid-width grid-height)
-   :flipped-cards [[nil nil] [nil nil]]
-   :points 0
-   :board-width grid-width
-   :board-height grid-height
-   :icons (shuffle misc/icons)})
-
-(defonce app-state
-  (atom initial-app-state))
-
+(defonce app-state (atom init/app-state))
 
 ;; ===== UI =====
 
 (defn shuffle-icons! []
-  (swap! app-state assoc :icons (shuffle misc/icons)))
+  (swap! app-state assoc :icons (init/icons)))
 
 (defn reduce-points! []
   (swap! app-state assoc :points (dec (:points @app-state))))
@@ -53,7 +25,7 @@
   (:board-height @app-state))
 
 (defn reset-board! []
-  (swap! app-state assoc :board (init-board (board-width) (board-height))))
+  (swap! app-state assoc :board (init/board (board-width) (board-height))))
 
 (defn reset-points! []
   (swap! app-state assoc :points 0))
@@ -119,31 +91,32 @@
   (or (= [x y] (flipped-card 0))
       (= [x y] (flipped-card 1))))
 
-(defn show-icon [x y]
+(defn card-icon [x y]
   (get-in @app-state [:icons (card-rank x y)] ))
 
 (defn card [x y]
-  [:g
-   [:rect {:width card-size
-           :height card-size
-           :x x
-           :y y
-           :fill (if (flipped-card? x y)
-                   "#1abc9c"
-                   "#bdc3c7")
-           :rx 0.1
-           :ry 0.1
-           :on-click
-           (fn card-click [e]
-             (set-flipped-cards x y)
-             (debug-state))}]
-   [:text {:x (+ x (/ card-size 2))
-           :y (+ y (/ card-size 2))
-           :fill "#fff"
-           :font-size 0.25
-           :text-anchor "middle"}
-    (if (flipped-card? x y)
-      (show-icon x y))]])
+  (let [card-size 0.96]
+    [:g
+     [:rect {:width card-size
+             :height card-size
+             :x x
+             :y y
+             :fill (if (flipped-card? x y)
+                     "#1abc9c"
+                     "#bdc3c7")
+             :rx 0.1
+             :ry 0.1
+             :on-click
+             (fn card-click [e]
+               (set-flipped-cards x y)
+               (debug-state))}]
+     [:text {:x (+ x (/ card-size 2))
+             :y (+ y (/ card-size 2))
+             :fill "#fff"
+             :font-size 0.25
+             :text-anchor "middle"}
+      (if (flipped-card? x y)
+        (card-icon x y))]]))
 
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
@@ -167,7 +140,7 @@
 
 (defn find-the-pair []
   [:div
-   [:h1 (:text @app-state)]
+   [:h1 "Find the pair!"]
    [:p
     [:button {:on-click
               (fn new-game-click [e]
