@@ -86,10 +86,6 @@
   (if (not (both-cards-flipped?))
     (set-flipped-card! x y)))
 
-(defn debug-state []
-  #_(prn (:board @app-state))
-  #_(prn (:flipped-cards @app-state)))
-
 (defn flipped-card? [x y]
   (or (= [x y] (flipped-card 0))
       (= [x y] (flipped-card 1))))
@@ -100,7 +96,7 @@
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
 
-(defn flip-card [x y]
+(defn card [x y]
   (let [card-width (/ 100 (board-width))
         card-height (/ 500 (board-height))]
     [:div {:class "card"
@@ -112,8 +108,7 @@
            :on-click
            (fn card-click [e]
              (if (and (card-exists? x y) (not (flipped-card? x y)))
-               (set-flipped-cards x y)
-               (debug-state)))
+               (set-flipped-cards x y)))
            :style (if (card-exists? x y)
                     {:cursor "pointer"})}
      [:figure {:class "card__side card__back"
@@ -159,25 +154,23 @@
      [:option {:value "10x10"} "Hell"]]]
    (if (game-won?)
      [:div {:class "victory"}
-      [:p
-       [:button {:class "victory__new-game"
-                 :on-click
-                 (fn new-game-click [e]
-                   (reset-game))}
-        "New game"]]
       (if (> 0 (:points @app-state))
         [:i {:class "victory__icon fa fa-thumbs-down"}]
         [:i {:class "victory__icon fa fa-thumbs-up"}])
       [:h2 "All pairs found!"]
       [:p "Points: "
-       [:span {:class "victory__points"} (:points @app-state)]]]
+       [:span {:class "victory__points"} (:points @app-state)]]
+      [:p
+       [:button {:class "victory__new-game"
+                 :on-click
+                 (fn new-game-click [e]
+                   (reset-game))}
+        "New game"]]]
      (into
        [:div {:class "board"}]
        (for [x (range (board-width))
              y (range (board-height))]
-         (flip-card x y)
-         #_(if (card-exists? x y)
-           (flip-card x y)))))])
+         (card x y))))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))

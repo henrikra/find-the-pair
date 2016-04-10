@@ -29,6 +29,10 @@ body {
 
 .victory {
   margin-top: 50px;
+  width: 500px;
+  margin: 0 auto;
+  padding: 50px;
+  border: 2px solid #bdc3c7;
 }
 
 .victory__new-game {
@@ -37,7 +41,6 @@ body {
   border: 0;
   padding: 10px 20px;
   text-transform: uppercase;
-  border-radius: 7px;
   transition: all 0.5s;
 }
 
@@ -97,7 +100,6 @@ body {
   align-items: center;
   justify-content: center;
   border: 3px solid #ecf0f1;
-  border-radius: 10px;
 }
 
 .card__back {
