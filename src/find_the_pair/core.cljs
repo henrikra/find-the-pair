@@ -40,7 +40,10 @@
   (swap! app-state assoc-in [:board y x] nil))
 
 (defn add-points! []
-  (swap! app-state assoc :points (+ (:points @app-state) 4)))
+  (swap! app-state assoc :points (+ (:points @app-state) 3)))
+
+(defn game-won? []
+  (every? nil? (flatten (get @app-state :board))))
 
 (defn success []
   (add-points!)
@@ -159,16 +162,23 @@
      [:option {:value "6x5"} "Hard"]
      [:option {:value "8x7"} "Nightmare"]
      [:option {:value "10x10"} "Hell"]]]
-   (into
-     [:svg
-      {:view-box (str "0 0 " (board-width) " " (board-height))
-       :width 500
-       :height 500}]
-     (for [x (range (board-width))
-           y (range (board-height))]
-       (if (card-exists? x y)
-         (card x y))))
-   [:p "Points: " (:points @app-state)]])
+   (if (game-won?)
+     [:div {:class "victory"}
+      (if (> 0 (:points @app-state))
+        [:i {:class "victory__icon fa fa-thumbs-down"}]
+        [:i {:class "victory__icon fa fa-thumbs-up"}])
+      [:h2 "All pairs found!"]
+      [:p "Points: "
+       [:span {:class "victory__points"} (:points @app-state)]]]
+     (into
+       [:svg
+        {:view-box (str "0 0 " (board-width) " " (board-height))
+         :width 500
+         :height 500}]
+       (for [x (range (board-width))
+             y (range (board-height))]
+         (if (card-exists? x y)
+           (card x y)))))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))

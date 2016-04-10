@@ -33,3 +33,31 @@ rect:hover {
 text {
    font-family: FontAwesome;
 }
+
+@keyframes hovering {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.victory {
+  margin-top: 50px;
+}
+
+.victory__icon {
+  font-size: 72px;
+  animation: hovering 2s infinite;
+}
+
+.victory__points {
+  color: #1abc9c;
+  font-size: 24px;
+}
