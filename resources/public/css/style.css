@@ -11,6 +11,13 @@ body {
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
+/* -----Layout----- */
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 /* -----Victory screen----- */
 
 @keyframes hovering {
@@ -29,24 +36,8 @@ body {
 
 .victory {
   margin-top: 50px;
-  width: 500px;
-  margin: 0 auto;
   padding: 50px;
   border: 2px solid #bdc3c7;
-}
-
-.victory__new-game {
-  background: #1abc9c;
-  color: #fff;
-  border: 0;
-  padding: 10px 20px;
-  text-transform: uppercase;
-  transition: all 0.5s;
-}
-
-.victory__new-game:hover {
-  cursor: pointer;
-  background: #16a085;
 }
 
 .victory__icon {
@@ -59,12 +50,21 @@ body {
   font-size: 24px;
 }
 
-/* -----Board----- */
-
-.board {
-  width: 500px;
-  margin: 0 auto;
+.victory__new-game {
+  background: #1abc9c;
+  color: #fff;
+  border: 0;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  transition: all 0.5s;
+  cursor: pointer;
 }
+
+.victory__new-game:hover {
+  background: #16a085;
+}
+
+/* -----Board----- */
 
 .board:after {
   content: "";
@@ -81,17 +81,13 @@ body {
 }
 
 .card__sides {
-  width: 100%;
   height: 100%;
-  position: absolute;
   transform-style: preserve-3d;
   transition: transform 0.5s;
 }
 
 .card__side {
   color: #fff;
-  margin: 0;
-  display: block;
   position: absolute;
   width: 100%;
   height: 100%;

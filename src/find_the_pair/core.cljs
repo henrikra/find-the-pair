@@ -97,27 +97,26 @@
   (not (nil? (card-rank x y))))
 
 (defn card [x y]
-  (let [card-width (/ 100 (board-width))
-        card-height (/ 500 (board-height))]
+  (let [card-side (/ 500 (board-width))]
     [:div {:class "card"
-           :style {:width (str card-width "%")
-                   :height (str card-height "px")}}
+           :style {:width (str card-side "px")
+                   :height (str card-side "px")}}
     [:div {:class (if (flipped-card? x y)
                      "card__sides card__sides--flipped"
                      "card__sides")
            :on-click
            (fn card-click [e]
-             (if (and (card-exists? x y) (not (flipped-card? x y)))
+             (if (and (card-exists? x y)
+                      (not (flipped-card? x y)))
                (set-flipped-cards x y)))
            :style (if (card-exists? x y)
                     {:cursor "pointer"})}
-     [:figure {:class "card__side card__back"
+     [:div {:class "card__side card__back"
                :style (if (not (card-exists? x y))
                         {:background "#ecf0f1"})}]
-     [:figure {:class "card__side card__front"}
-      (if (flipped-card? x y)
-        [:i {:class (str "fa " (card-icon x y))
-             :style {:font-size (str (* card-width 1.75) "px")}}])]]]))
+     [:div {:class "card__side card__front"}
+      [:i {:class (str "fa " (card-icon x y))
+           :style {:font-size (str (* card-side 0.4) "px")}}]]]]))
 
 (defn set-board-width! [new-value]
   (swap! app-state assoc :board-width new-value))
@@ -137,7 +136,7 @@
   (reset-icons!))
 
 (defn find-the-pair []
-  [:div
+  [:div {:class "container"}
    [:h1 "Find the pair!"]
    [:p
     [:label "Difficulty: "]
