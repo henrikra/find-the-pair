@@ -191,11 +191,11 @@
     [:span {:class "victory__points"} (:points @app-state)]]
    [:div {:class "points"}
     [:p {:class "increase"
-         :style {:animation (if (= (:show-increase @app-state) true)
-                              "fadeOutUp 1s forwards")}} "+3"]
+         :style {:animation (if (show-increase)
+                              "fadeOutUp 0.7s forwards")}} "+3"]
     [:p {:class "decrease"
-         :style {:animation (if (= (:show-decrease @app-state) true)
-                              "fadeOutUp 1s forwards")}} "-1"]]])
+         :style {:animation (if (show-decrease)
+                              "fadeOutUp 0.7s forwards")}} "-1"]]])
 
 (defn difficulty-dropdown []
   [:form {:class "difficulty-dropdown"}
