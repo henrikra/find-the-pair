@@ -115,8 +115,9 @@
                :style (if (not (card-exists? x y))
                         {:background "#ecf0f1"})}]
      [:div {:class "card__side card__front"}
-      [:i {:class (str "fa " (card-icon x y))
-           :style {:font-size (str (* card-side 0.4) "px")}}]]]]))
+      (if (flipped-card? x y)
+        [:i {:class (str "fa " (card-icon x y))
+             :style {:font-size (str (* card-side 0.4) "px")}}])]]]))
 
 (defn set-board-width! [new-value]
   (swap! app-state assoc :board-width new-value))
@@ -135,6 +136,28 @@
   (reset-points!)
   (reset-icons!))
 
+(defn victory-view []
+  [:div {:class "victory"}
+   (if (> 0 (:points @app-state))
+     [:i {:class "victory__icon fa fa-thumbs-down"}]
+     [:i {:class "victory__icon fa fa-thumbs-up"}])
+   [:h2 "All pairs found!"]
+   [:p "Points: "
+    [:span {:class "victory__points"} (:points @app-state)]]
+   [:p
+    [:button {:class "victory__new-game"
+              :on-click
+              (fn new-game-click [e]
+                (reset-game))}
+     "New game"]]])
+
+(defn board-view []
+  (into
+    [:div {:class "board"}]
+    (for [x (range (board-width))
+          y (range (board-height))]
+      (card x y))))
+
 (defn find-the-pair []
   [:div {:class "container"}
    [:h1 "Find the pair!"]
@@ -152,24 +175,8 @@
      [:option {:value "8x7"} "Nightmare"]
      [:option {:value "10x10"} "Hell"]]]
    (if (game-won?)
-     [:div {:class "victory"}
-      (if (> 0 (:points @app-state))
-        [:i {:class "victory__icon fa fa-thumbs-down"}]
-        [:i {:class "victory__icon fa fa-thumbs-up"}])
-      [:h2 "All pairs found!"]
-      [:p "Points: "
-       [:span {:class "victory__points"} (:points @app-state)]]
-      [:p
-       [:button {:class "victory__new-game"
-                 :on-click
-                 (fn new-game-click [e]
-                   (reset-game))}
-        "New game"]]]
-     (into
-       [:div {:class "board"}]
-       (for [x (range (board-width))
-             y (range (board-height))]
-         (card x y))))])
+     (victory-view)
+     (board-view))])
 
 (reagent/render-component [find-the-pair]
                           (. js/document (getElementById "app")))
