@@ -1,10 +1,11 @@
 # find-the-pair
 
-FIXME: Write a one-line description of your library/project.
+Classic memory game developed with ClojureScript.
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+In this game the board is filled with cards which are turned backwards. You have to turn two cards at a time and find matching icon!
+You can try the game [here](http://henrikra.github.io/find-the-pair)
 
 ## Setup
 
@@ -30,10 +31,10 @@ To create a production build run:
     lein do clean, cljsbuild once min
 
 And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
+get live reloading, nor a REPL.
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © henrikra
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
