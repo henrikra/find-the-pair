@@ -119,16 +119,16 @@
         [:i {:class (str "fa " (card-icon x y))
              :style {:font-size (str (* card-side 0.4) "px")}}])]]]))
 
-(defn set-cards-per-row! [new-value]
-  (swap! app-state assoc :cards-per-row new-value))
+(defn set-cards-per-row! [new-per-row]
+  (swap! app-state assoc :cards-per-row new-per-row))
 
-(defn set-cards-per-column! [new-value]
-  (swap! app-state assoc :cards-per-column new-value))
+(defn set-cards-per-column! [new-per-column]
+  (swap! app-state assoc :cards-per-column new-per-column))
 
 (defn set-board-dimensions [new-dimensions]
-  (let [[new-width new-height] (str/split new-dimensions "x")]
-    (set-cards-per-row! (int new-width))
-    (set-cards-per-column! (int new-height))))
+  (let [[new-per-row new-per-column] (str/split new-dimensions "x")]
+    (set-cards-per-row! (int new-per-row))
+    (set-cards-per-column! (int new-per-column))))
 
 (defn reset-game []
   (reset-flipped-cards!)
@@ -136,9 +136,12 @@
   (reset-points!)
   (reset-icons!))
 
+(defn points-positive? []
+  (> 0 (:points @app-state)))
+
 (defn victory-view []
   [:div {:class "victory"}
-   (if (> 0 (:points @app-state))
+   (if (points-positive?)
      [:i {:class "victory__icon fa fa-thumbs-down"}]
      [:i {:class "victory__icon fa fa-thumbs-up"}])
    [:h2 "All pairs found!"]
@@ -159,7 +162,7 @@
       (card x y))))
 
 (defn difficulty-dropdown []
-  [:form {:class "difficulty-selection"}
+  [:form {:class "difficulty-dropdown"}
    [:label "Difficulty: "]
    [:select {:on-change
              (fn difficulty-change [x]
