@@ -18,14 +18,14 @@
 (defn reset-flipped-cards! []
   (swap! app-state assoc :flipped-cards init/flipped-cards))
 
-(defn board-width []
-  (:board-width @app-state))
+(defn cards-per-row []
+  (:cards-per-row @app-state))
 
-(defn board-height []
-  (:board-height @app-state))
+(defn cards-per-column []
+  (:cards-per-column @app-state))
 
 (defn reset-board! []
-  (swap! app-state assoc :board (init/board (board-width) (board-height))))
+  (swap! app-state assoc :board (init/board (cards-per-row) (cards-per-column))))
 
 (defn reset-points! []
   (swap! app-state assoc :points init/points))
@@ -66,7 +66,7 @@
 (defn check-for-pair []
   (js/setTimeout #(if (found-pair?)
                     (success)
-                    (mistake)) 1000))
+                    (mistake)) init/cards-visible-time))
 
 (defn second-card-flipped [x y]
   (swap! app-state assoc-in [:flipped-cards 1] [x y])
@@ -97,7 +97,7 @@
   (not (nil? (card-rank x y))))
 
 (defn card [x y]
-  (let [card-side (/ 500 (board-width))]
+  (let [card-side (/ init/container-width (cards-per-row))]
     [:div {:class "card"
            :style {:width (str card-side "px")
                    :height (str card-side "px")}}
@@ -119,16 +119,16 @@
         [:i {:class (str "fa " (card-icon x y))
              :style {:font-size (str (* card-side 0.4) "px")}}])]]]))
 
-(defn set-board-width! [new-value]
-  (swap! app-state assoc :board-width new-value))
+(defn set-cards-per-row! [new-value]
+  (swap! app-state assoc :cards-per-row new-value))
 
-(defn set-board-height! [new-value]
-  (swap! app-state assoc :board-height new-value))
+(defn set-cards-per-column! [new-value]
+  (swap! app-state assoc :cards-per-column new-value))
 
 (defn set-board-dimensions [new-dimensions]
   (let [[new-width new-height] (str/split new-dimensions "x")]
-    (set-board-width! (int new-width))
-    (set-board-height! (int new-height))))
+    (set-cards-per-row! (int new-width))
+    (set-cards-per-column! (int new-height))))
 
 (defn reset-game []
   (reset-flipped-cards!)
@@ -154,12 +154,13 @@
 (defn board-view []
   (into
     [:div {:class "board"}]
-    (for [x (range (board-width))
-          y (range (board-height))]
+    (for [x (range (cards-per-row))
+          y (range (cards-per-column))]
       (card x y))))
 
 (defn find-the-pair []
-  [:div {:class "container"}
+  [:div {:class "container"
+         :style {:max-width init/container-width}}
    [:h1 "Find the pair!"]
    [:p
     [:label "Difficulty: "]

@@ -17,15 +17,17 @@
 (defn icons []
   (shuffle misc/icons))
 
-(def board-width 4)
-(def board-height 4)
+(def cards-per-row 4)
+(def cards-per-column 4)
 (def flipped-cards [[nil nil] [nil nil]])
 (def points 0)
+(def cards-visible-time 1000)
+(def container-width 500)
 
 (def app-state
-  {:board (board board-width board-height)
+  {:board (board cards-per-row cards-per-column)
    :flipped-cards flipped-cards
    :points points
-   :board-width board-width
-   :board-height board-height
+   :cards-per-row cards-per-row
+   :cards-per-column cards-per-column
    :icons (icons)})
