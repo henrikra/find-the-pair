@@ -17,6 +17,12 @@ body {
   margin: 0 auto;
 }
 
+/* -----Difficulty selection----- */
+
+.difficulty-selection {
+  margin-bottom: 25px;
+}
+
 /* -----Victory screen----- */
 
 @keyframes hovering {

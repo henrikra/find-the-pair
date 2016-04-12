@@ -158,23 +158,27 @@
           y (range (cards-per-column))]
       (card x y))))
 
+(defn difficulty-dropdown []
+  [:form {:class "difficulty-selection"}
+   [:label "Difficulty: "]
+   [:select {:on-change
+             (fn difficulty-change [x]
+               (let [selected-dimensions (.. x -target -value)]
+                 (set-board-dimensions selected-dimensions)
+                 (reset-game)))}
+    [:option {:value "2x2"} "Drunk"]
+    [:option {:value "3x2"} "Supa easy"]
+    [:option {:value "4x3"} "Easy"]
+    [:option {:value "4x4" :selected true} "Medium"]
+    [:option {:value "6x5"} "Hard"]
+    [:option {:value "8x7"} "Nightmare"]
+    [:option {:value "10x10"} "Hell"]]])
+
 (defn find-the-pair []
   [:div {:class "container"
          :style {:max-width init/container-width}}
    [:h1 "Find the pair!"]
-   [:p
-    [:label "Difficulty: "]
-    [:select {:on-change
-              (fn difficulty-change [x]
-                (set-board-dimensions (.. x -target -value))
-                (reset-game))}
-     [:option {:value "2x2"} "Drunk"]
-     [:option {:value "3x2"} "Supa easy"]
-     [:option {:value "4x3"} "Easy"]
-     [:option {:value "4x4" :selected true} "Medium"]
-     [:option {:value "6x5"} "Hard"]
-     [:option {:value "8x7"} "Nightmare"]
-     [:option {:value "10x10"} "Hell"]]]
+   (difficulty-dropdown)
    (if (game-won?)
      (victory-view)
      (board-view))])
