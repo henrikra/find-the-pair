@@ -4,7 +4,7 @@ Classic memory game developed with ClojureScript.
 
 ## Overview
 
-In this game the board is filled with cards which are turned backwards. You have to turn two cards at a time and find matching icon!
+In this game the board is filled with cards which are turned backwards. You have to turn two cards at a time and find matching icons!
 You can try the game [here](http://henrikra.github.io/find-the-pair)
 
 ## Setup
