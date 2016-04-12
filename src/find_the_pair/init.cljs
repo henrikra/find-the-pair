@@ -23,6 +23,7 @@
 (def points 0)
 (def cards-visible-time 1000)
 (def container-width 500)
+(def points-increase 3)
 
 (def app-state
   {:board (board cards-per-row cards-per-column)
@@ -30,4 +31,6 @@
    :points points
    :cards-per-row cards-per-row
    :cards-per-column cards-per-column
-   :icons (icons)})
+   :icons (icons)
+   :show-increase false
+   :show-decrease false})

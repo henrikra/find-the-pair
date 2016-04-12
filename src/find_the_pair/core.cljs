@@ -18,6 +18,12 @@
 (defn reset-flipped-cards! []
   (swap! app-state assoc :flipped-cards init/flipped-cards))
 
+(defn reset-show-increase! []
+  (swap! app-state assoc :show-increase false))
+
+(defn reset-show-decrease! []
+  (swap! app-state assoc :show-decrease false))
+
 (defn cards-per-row []
   (:cards-per-row @app-state))
 
@@ -40,16 +46,29 @@
   (swap! app-state assoc-in [:board y x] nil))
 
 (defn add-points! []
-  (swap! app-state assoc :points (+ (:points @app-state) 3)))
+  (swap! app-state assoc :points (+ (:points @app-state) init/points-increase)))
 
 (defn game-won? []
   (every? nil? (flatten (get @app-state :board))))
+
+(defn show-increase []
+  (:show-increase @app-state))
+
+(defn show-decrease []
+  (:show-decrease @app-state))
+
+(defn set-increase [new-value]
+  (swap! app-state assoc :show-increase new-value))
+
+(defn set-decrease [new-value]
+  (swap! app-state assoc :show-decrease new-value))
 
 (defn success []
   (add-points!)
   (remove-card! (flipped-card 0))
   (remove-card! (flipped-card 1))
-  (reset-flipped-cards!))
+  (reset-flipped-cards!)
+  (set-increase true))
 
 (defn card-rank
   ([x y] (get-in @app-state [:board y x]))
@@ -61,6 +80,7 @@
 
 (defn mistake []
   (reduce-points!)
+  (set-decrease true)
   (reset-flipped-cards!))
 
 (defn check-for-pair []
@@ -72,10 +92,15 @@
   (swap! app-state assoc-in [:flipped-cards 1] [x y])
   (check-for-pair))
 
+(defn first-card-flipped [x y]
+  (set-increase false)
+  (set-decrease false)
+  (swap! app-state assoc-in [:flipped-cards 0] [x y]))
+
 (defn set-flipped-card! [x y]
   (if (card-flipped? 0)
     (second-card-flipped x y)
-    (swap! app-state assoc-in [:flipped-cards 0] [x y])))
+    (first-card-flipped x y)))
 
 (defn both-cards-flipped? []
   (and (= (card-flipped? 0)
@@ -134,7 +159,8 @@
   (reset-flipped-cards!)
   (reset-board!)
   (reset-points!)
-  (reset-icons!))
+  (reset-icons!)
+  (reset-show-increase!))
 
 (defn points-positive? []
   (> 0 (:points @app-state)))
@@ -155,11 +181,21 @@
      "New game"]]])
 
 (defn board-view []
-  (into
+  [:div
+   (into
     [:div {:class "board"}]
     (for [x (range (cards-per-row))
           y (range (cards-per-column))]
-      (card x y))))
+      (card x y)))
+   [:p "Points: "
+    [:span {:class "victory__points"} (:points @app-state)]]
+   [:div {:class "points"}
+    [:p {:class "increase"
+         :style {:animation (if (= (:show-increase @app-state) true)
+                              "fadeOutUp 1s forwards")}} "+3"]
+    [:p {:class "decrease"
+         :style {:animation (if (= (:show-decrease @app-state) true)
+                              "fadeOutUp 1s forwards")}} "-1"]]])
 
 (defn difficulty-dropdown []
   [:form {:class "difficulty-dropdown"}

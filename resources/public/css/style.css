@@ -121,3 +121,33 @@ body {
 .card__sides--flipped {
   transform: rotateY(180deg);
 }
+
+@keyframes fadeOutUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.increase {
+  color: #1abc9c;
+  margin: 0;
+  opacity: 0;
+  font-size: 48px;
+}
+
+.decrease {
+  color: #e74c3c;
+  margin: 0;
+  opacity: 0;
+  font-size: 48px;
+}
