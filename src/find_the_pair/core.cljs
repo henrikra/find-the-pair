@@ -91,28 +91,24 @@
                     (success)
                     (mistake)) init/cards-visible-time))
 
-(defn second-card-flipped [x y]
+(defn second-card-flipped! [x y]
   (swap! app-state assoc-in [:flipped-cards 1] [x y])
   (check-for-pair))
 
-(defn first-card-flipped [x y]
+(defn first-card-flipped! [x y]
   (set-increase false)
   (set-decrease false)
   (swap! app-state assoc-in [:flipped-cards 0] [x y]))
 
-(defn set-flipped-card! [x y]
+(defn set-flipped-card [x y]
   (if (card-flipped? 0)
-    (second-card-flipped x y)
-    (first-card-flipped x y)))
+    (second-card-flipped! x y)
+    (first-card-flipped! x y)))
 
 (defn both-cards-flipped? []
   (and (= (card-flipped? 0)
           (card-flipped? 1)
           true)))
-
-(defn set-flipped-cards [x y]
-  (if (not (both-cards-flipped?))
-    (set-flipped-card! x y)))
 
 (defn flipped-card? [x y]
   (or (= [x y] (flipped-card 0))
@@ -135,8 +131,9 @@
            :on-click
            (fn card-click [e]
              (if (and (card-exists? x y)
-                      (not (flipped-card? x y)))
-               (set-flipped-cards x y)))
+                      (not (flipped-card? x y))
+                      (not (both-cards-flipped?)))
+               (set-flipped-card x y)))
            :style (if (card-exists? x y)
                     {:cursor "pointer"})}
      [:div {:class "card__side card__back"
