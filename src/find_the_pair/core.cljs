@@ -12,9 +12,12 @@
 (defn reset-icons! []
   (swap! app-state assoc :icons (init/icons)))
 
+(defn game-points []
+  (:points @app-state))
+
 (defn reduce-points! []
   (swap! app-state assoc :points
-         (- (:points @app-state) init/points-decrease)))
+         (- (game-points) init/points-decrease)))
 
 (defn reset-flipped-cards! []
   (swap! app-state assoc :flipped-cards init/flipped-cards))
@@ -49,7 +52,7 @@
 
 (defn add-points! []
   (swap! app-state assoc :points
-         (+ (:points @app-state) init/points-increase)))
+         (+ (game-points) init/points-increase)))
 
 (defn game-won? []
   (every? nil? (flatten (get @app-state :board))))
@@ -126,8 +129,8 @@
            :style {:width (str card-side "px")
                    :height (str card-side "px")}}
     [:div {:class (if (flipped-card? x y)
-                     "card__sides card__sides--flipped"
-                     "card__sides")
+                    "card__sides card__sides--flipped"
+                    "card__sides")
            :on-click
            (fn card-click [e]
              (if (and (card-exists? x y)
@@ -137,8 +140,8 @@
            :style (if (card-exists? x y)
                     {:cursor "pointer"})}
      [:div {:class "card__side card__back"
-               :style (if (not (card-exists? x y))
-                        {:background "#ecf0f1"})}]
+            :style (if (not (card-exists? x y))
+                     {:background "#ecf0f1"})}]
      [:div {:class "card__side card__front"}
       (if (flipped-card? x y)
         [:i {:class (str "fa " (card-icon x y))
@@ -164,12 +167,12 @@
 
 (defn victory-view []
   [:div {:class "victory"}
-   [:i {:class (if (pos? (:points @app-state))
+   [:i {:class (if (pos? (game-points))
                  "victory__icon fa fa-thumbs-up"
                  "victory__icon fa fa-thumbs-down")}]
    [:h2 "All pairs found!"]
    [:p "Points: "
-    [:span {:class "victory__points"} (:points @app-state)]]
+    [:span {:class "victory__points"} (game-points)]]
    [:p
     [:button {:class "victory__new-game"
               :on-click
@@ -185,7 +188,7 @@
           y (range (cards-per-column))]
       (card x y)))
    [:p "Points: "
-    [:span {:class "victory__points"} (:points @app-state)]]
+    [:span {:class "victory__points"} (game-points)]]
    [:div {:class "points"}
     [:p {:class "increase"
          :style {:animation (if (show-increase)
