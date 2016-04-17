@@ -13,7 +13,8 @@
   (swap! app-state assoc :icons (init/icons)))
 
 (defn reduce-points! []
-  (swap! app-state assoc :points (- (:points @app-state) init/points-decrease)))
+  (swap! app-state assoc :points
+         (- (:points @app-state) init/points-decrease)))
 
 (defn reset-flipped-cards! []
   (swap! app-state assoc :flipped-cards init/flipped-cards))
@@ -31,7 +32,8 @@
   (:cards-per-column @app-state))
 
 (defn reset-board! []
-  (swap! app-state assoc :board (init/board (cards-per-row) (cards-per-column))))
+  (swap! app-state assoc :board
+         (init/board (cards-per-row) (cards-per-column))))
 
 (defn reset-points! []
   (swap! app-state assoc :points init/points))
@@ -46,7 +48,8 @@
   (swap! app-state assoc-in [:board y x] nil))
 
 (defn add-points! []
-  (swap! app-state assoc :points (+ (:points @app-state) init/points-increase)))
+  (swap! app-state assoc :points
+         (+ (:points @app-state) init/points-increase)))
 
 (defn game-won? []
   (every? nil? (flatten (get @app-state :board))))
