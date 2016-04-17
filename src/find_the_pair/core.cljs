@@ -13,7 +13,7 @@
   (swap! app-state assoc :icons (init/icons)))
 
 (defn reduce-points! []
-  (swap! app-state assoc :points (dec (:points @app-state))))
+  (swap! app-state assoc :points (- (:points @app-state) init/points-decrease)))
 
 (defn reset-flipped-cards! []
   (swap! app-state assoc :flipped-cards init/flipped-cards))
@@ -162,14 +162,11 @@
   (reset-icons!)
   (reset-show-increase!))
 
-(defn points-positive? []
-  (> 0 (:points @app-state)))
-
 (defn victory-view []
   [:div {:class "victory"}
-   (if (points-positive?)
-     [:i {:class "victory__icon fa fa-thumbs-down"}]
-     [:i {:class "victory__icon fa fa-thumbs-up"}])
+   [:i {:class (if (pos? (:points @app-state))
+                 "victory__icon fa fa-thumbs-up"
+                 "victory__icon fa fa-thumbs-down")}]
    [:h2 "All pairs found!"]
    [:p "Points: "
     [:span {:class "victory__points"} (:points @app-state)]]
@@ -192,10 +189,10 @@
    [:div {:class "points"}
     [:p {:class "increase"
          :style {:animation (if (show-increase)
-                              "fadeOutUp 0.7s forwards")}} "+3"]
+                              "fadeOutUp 0.7s forwards")}} (str "+" init/points-increase)]
     [:p {:class "decrease"
          :style {:animation (if (show-decrease)
-                              "fadeOutUp 0.7s forwards")}} "-1"]]])
+                              "fadeOutUp 0.7s forwards")}} (str "-" init/points-decrease)]]])
 
 (defn difficulty-dropdown []
   [:form {:class "difficulty-dropdown"}

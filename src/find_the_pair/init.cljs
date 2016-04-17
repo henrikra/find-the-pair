@@ -2,12 +2,10 @@
   (:require [find-the-pair.misc :as misc]))
 
 (defn generate-board [cards width]
-  (vec (map
-         #(vec %)
-         (partition width (shuffle cards)))))
+  (vec (map vec (partition width (shuffle cards)))))
 
 (defn max-card [width height]
-  (+ (/ (* width height) 2) 1))
+  (inc (/ (* width height) 2)))
 
 (defn board [width height]
   (let [possible-cards (range 1 (max-card width height))
@@ -24,6 +22,7 @@
 (def cards-visible-time 1000)
 (def container-width 500)
 (def points-increase 3)
+(def points-decrease 1)
 
 (def app-state
   {:board (board cards-per-row cards-per-column)
