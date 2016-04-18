@@ -125,8 +125,7 @@
 
 (defn card [x y]
   (let [card-side (/ init/container-width (cards-per-row))]
-    [:div {:class "card"
-           :style {:width (str card-side "px")
+    [:div.card {:style {:width (str card-side "px")
                    :height (str card-side "px")}}
     [:div {:class (if (flipped-card? x y)
                     "card__sides card__sides--flipped"
@@ -139,10 +138,9 @@
                (set-flipped-card x y)))
            :style (if (card-exists? x y)
                     {:cursor "pointer"})}
-     [:div {:class "card__side card__back"
-            :style (if (not (card-exists? x y))
+     [:div.card__side.card__back {:style (if (not (card-exists? x y))
                      {:background "#ecf0f1"})}]
-     [:div {:class "card__side card__front"}
+     [:div.card__side.card__front
       (if (flipped-card? x y)
         [:i {:class (str "fa " (card-icon x y))
              :style {:font-size (str (* card-side 0.4) "px")}}])]]]))
@@ -166,16 +164,15 @@
   (reset-show-increase!))
 
 (defn victory-view []
-  [:div {:class "victory"}
+  [:div.victory
    [:i {:class (if (pos? (game-points))
                  "victory__icon fa fa-thumbs-up"
                  "victory__icon fa fa-thumbs-down")}]
    [:h2 "All pairs found!"]
    [:p "Points: "
-    [:span {:class "victory__points"} (game-points)]]
+    [:span.victory__points (game-points)]]
    [:p
-    [:button {:class "victory__new-game"
-              :on-click
+    [:button.victory__new-game {:on-click
               (fn new-game-click [e]
                 (reset-game))}
      "New game"]]])
@@ -183,22 +180,20 @@
 (defn board-view []
   [:div
    (into
-    [:div {:class "board"}]
+    [:div.board]
     (for [x (range (cards-per-row))
           y (range (cards-per-column))]
       (card x y)))
    [:p "Points: "
-    [:span {:class "victory__points"} (game-points)]]
-   [:div {:class "points"}
-    [:p {:class "increase"
-         :style {:animation (if (show-increase)
+    [:span.victory__points (game-points)]]
+   [:div.points
+    [:p.increase {:style {:animation (if (show-increase)
                               "fadeOutUp 0.7s forwards")}} (str "+" init/points-increase)]
-    [:p {:class "decrease"
-         :style {:animation (if (show-decrease)
+    [:p.decrease {:style {:animation (if (show-decrease)
                               "fadeOutUp 0.7s forwards")}} (str "-" init/points-decrease)]]])
 
 (defn difficulty-dropdown []
-  [:form {:class "difficulty-dropdown"}
+  [:form.difficulty-dropdown
    [:label "Difficulty: "]
    [:select {:on-change
              (fn difficulty-change [x]
@@ -214,8 +209,7 @@
     [:option {:value "10x10"} "Hell"]]])
 
 (defn find-the-pair []
-  [:div {:class "container"
-         :style {:max-width init/container-width}}
+  [:div.container {:style {:max-width init/container-width}}
    [:h1 "Find the pair!"]
    (difficulty-dropdown)
    (if (game-won?)
