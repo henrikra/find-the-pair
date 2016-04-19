@@ -1,7 +1,10 @@
 (ns find-the-pair.core
   (:require [reagent.core :as reagent :refer [atom]]
             [clojure.string :as str]
-            [find-the-pair.init :as init]))
+            [find-the-pair.init :as init]
+            [find-the-pair.difficulty-dropdown :as dropdown]
+            [find-the-pair.card :as card]
+            [find-the-pair.victory-view :as victory-view]))
 
 (enable-console-print!)
 
@@ -123,28 +126,6 @@
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
 
-(defn card [x y]
-  (let [card-side (/ init/container-width (cards-per-row))]
-    [:div.card {:style {:width (str card-side "px")
-                   :height (str card-side "px")}}
-    [:div {:class (if (flipped-card? x y)
-                    "card__sides card__sides--flipped"
-                    "card__sides")
-           :on-click
-           (fn card-click [e]
-             (if (and (card-exists? x y)
-                      (not (flipped-card? x y))
-                      (not (both-cards-flipped?)))
-               (set-flipped-card x y)))
-           :style (if (card-exists? x y)
-                    {:cursor "pointer"})}
-     [:div.card__side.card__back {:style (if (not (card-exists? x y))
-                     {:background "#ecf0f1"})}]
-     [:div.card__side.card__front
-      (if (flipped-card? x y)
-        [:i {:class (str "fa " (card-icon x y))
-             :style {:font-size (str (* card-side 0.4) "px")}}])]]]))
-
 (defn set-cards-per-row! [new-per-row]
   (swap! app-state assoc :cards-per-row new-per-row))
 
@@ -163,19 +144,8 @@
   (reset-icons!)
   (reset-show-increase!))
 
-(defn victory-view []
-  [:div.victory
-   [:i {:class (if (pos? (game-points))
-                 "victory__icon fa fa-thumbs-up"
-                 "victory__icon fa fa-thumbs-down")}]
-   [:h2 "All pairs found!"]
-   [:p "Points: "
-    [:span.victory__points (game-points)]]
-   [:p
-    [:button.victory__new-game {:on-click
-              (fn new-game-click [e]
-                (reset-game))}
-     "New game"]]])
+(defn new-game-click []
+  (reset-game))
 
 (defn board-view []
   [:div
@@ -183,7 +153,15 @@
     [:div.board]
     (for [x (range (cards-per-row))
           y (range (cards-per-column))]
-      (card x y)))
+      (card/card x
+                 y
+                 init/container-width
+                 (cards-per-row)
+                 (flipped-card? x y)
+                 (card-exists? x y)
+                 set-flipped-card
+                 (both-cards-flipped?)
+                 (card-icon x y))))
    [:p "Points: "
     [:span.victory__points (game-points)]]
    [:div.points
@@ -192,28 +170,17 @@
     [:p.decrease {:style {:animation (if (show-decrease)
                               "fadeOutUp 0.7s forwards")}} (str "-" init/points-decrease)]]])
 
-(defn difficulty-dropdown []
-  [:form.difficulty-dropdown
-   [:label "Difficulty: "]
-   [:select {:on-change
-             (fn difficulty-change [x]
-               (let [selected-dimensions (.. x -target -value)]
-                 (set-board-dimensions selected-dimensions)
-                 (reset-game)))}
-    [:option {:value "2x2"} "Drunk"]
-    [:option {:value "3x2"} "Supa easy"]
-    [:option {:value "4x3"} "Easy"]
-    [:option {:value "4x4" :selected true} "Medium"]
-    [:option {:value "6x5"} "Hard"]
-    [:option {:value "8x7"} "Nightmare"]
-    [:option {:value "10x10"} "Hell"]]])
+(defn difficulty-change [x]
+  (let [selected-dimensions (.. x -target -value)]
+    (set-board-dimensions selected-dimensions)
+    (reset-game)))
 
 (defn find-the-pair []
   [:div.container {:style {:max-width init/container-width}}
    [:h1 "Find the pair!"]
-   (difficulty-dropdown)
+   (dropdown/difficulty-dropdown difficulty-change)
    (if (game-won?)
-     (victory-view)
+     (victory-view/victory-view new-game-click (game-points))
      (board-view))])
 
 (reagent/render-component [find-the-pair]
