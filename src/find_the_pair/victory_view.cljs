@@ -1,8 +1,9 @@
 (ns find-the-pair.victory-view
-  (:require [find-the-pair.state :refer [game-points]]))
+  (:require [find-the-pair.state :refer [game-points
+                                         reset-game]]))
 
 
-(defn victory-view [on-click]
+(defn victory-view []
   [:div.victory
    [:i {:class (if (pos? (game-points))
                  "victory__icon fa fa-thumbs-up"
@@ -12,5 +13,5 @@
     [:span.victory__points (game-points)]]
    [:p
     [:button.victory__new-game
-     {:on-click on-click}
+     {:on-click reset-game}
      "New game"]]])

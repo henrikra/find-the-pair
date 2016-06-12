@@ -39,5 +39,5 @@
    [:h1 "Find the pair!"]
    (dropdown/difficulty-dropdown difficulty-change)
    (if (game-won?)
-     (victory-view reset-game)
+     (victory-view)
      (board-view))])
