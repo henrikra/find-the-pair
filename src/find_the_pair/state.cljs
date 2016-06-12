@@ -128,6 +128,3 @@
   (reset-points!)
   (reset-icons!)
   (reset-show-increase!))
-
-(defn new-game-click []
-  (reset-game))

@@ -11,8 +11,7 @@
                                          show-increase
                                          show-decrease
                                          set-board-dimensions!
-                                         reset-game
-                                         new-game-click]]))
+                                         reset-game]]))
 
 (defn board-view []
   [:div
@@ -40,5 +39,5 @@
    [:h1 "Find the pair!"]
    (dropdown/difficulty-dropdown difficulty-change)
    (if (game-won?)
-     (victory-view/victory-view new-game-click (game-points))
+     (victory-view/victory-view reset-game (game-points))
      (board-view))])
