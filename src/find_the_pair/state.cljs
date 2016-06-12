@@ -1,6 +1,5 @@
 (ns find-the-pair.state
   (:require [reagent.core :as reagent :refer [atom]]
-            [clojure.string :as str]
             [find-the-pair.init :as init]))
 
 (defonce app-state (atom init/app-state))
@@ -119,16 +118,9 @@
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
 
-(defn set-cards-per-row! [new-per-row]
-  (swap! app-state assoc :cards-per-row new-per-row))
-
-(defn set-cards-per-column! [new-per-column]
+(defn set-board-dimensions! [new-per-row new-per-column]
+  (swap! app-state assoc :cards-per-row new-per-row)
   (swap! app-state assoc :cards-per-column new-per-column))
-
-(defn set-board-dimensions [new-dimensions]
-  (let [[new-per-row new-per-column] (str/split new-dimensions "x")]
-    (set-cards-per-row! (int new-per-row))
-    (set-cards-per-column! (int new-per-column))))
 
 (defn reset-game []
   (reset-flipped-cards!)

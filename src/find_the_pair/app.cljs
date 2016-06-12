@@ -2,6 +2,7 @@
   (:require [find-the-pair.init :as init]
             [find-the-pair.difficulty-dropdown :as dropdown]
             [find-the-pair.card :as card]
+            [clojure.string :as str]
             [find-the-pair.victory-view :as victory-view]
             [find-the-pair.state :refer [game-points
                                          cards-per-row
@@ -9,7 +10,7 @@
                                          game-won?
                                          show-increase
                                          show-decrease
-                                         set-board-dimensions
+                                         set-board-dimensions!
                                          reset-game
                                          new-game-click]]))
 
@@ -29,8 +30,9 @@
                               "fadeOutUp 0.7s forwards")}} (str "-" init/points-decrease)]]])
 
 (defn difficulty-change [x]
-  (let [selected-dimensions (.. x -target -value)]
-    (set-board-dimensions selected-dimensions)
+  (let [selected-dimensions (.. x -target -value)
+        [per-row per-column] (str/split selected-dimensions "x")]
+    (set-board-dimensions! (int per-row) (int per-column))
     (reset-game)))
 
 (defn app []
