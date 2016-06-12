@@ -86,6 +86,8 @@
   (reset-flipped-cards!))
 
 (defn check-for-pair []
+  (set-increase false)
+  (set-decrease false)
   (js/setTimeout #(if (found-pair?)
                     (success)
                     (mistake)) init/cards-visible-time))
@@ -95,8 +97,6 @@
   (check-for-pair))
 
 (defn first-card-flipped! [x y]
-  (set-increase false)
-  (set-decrease false)
   (swap! app-state assoc-in [:flipped-cards 0] [x y]))
 
 (defn set-flipped-card [x y]
