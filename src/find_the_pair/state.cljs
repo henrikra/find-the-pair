@@ -114,7 +114,7 @@
       (= [x y] (flipped-card 1))))
 
 (defn card-icon [x y]
-  (get-in @app-state [:icons (card-rank x y)] ))
+  (str "fa " (get-in @app-state [:icons (card-rank x y)] )))
 
 (defn card-exists? [x y]
   (not (nil? (card-rank x y))))
