@@ -1,9 +1,18 @@
-(ns find-the-pair.difficulty-dropdown)
+(ns find-the-pair.difficulty-dropdown
+  (:require [clojure.string :as str]
+            [find-the-pair.state :refer [reset-game
+                                         set-board-dimensions!]]))
 
-(defn difficulty-dropdown [on-change]
+(defn difficulty-change [x]
+  (let [selected-dimensions (.. x -target -value)
+        [per-row per-column] (str/split selected-dimensions "x")]
+    (set-board-dimensions! (int per-row) (int per-column))
+    (reset-game)))
+
+(defn difficulty-dropdown []
   [:form.difficulty-dropdown
    [:label "Difficulty: "]
-   [:select {:on-change on-change}
+   [:select {:on-change difficulty-change}
     [:option {:value "2x2"} "Drunk"]
     [:option {:value "3x2"} "Supa easy"]
     [:option {:value "4x3"} "Easy"]

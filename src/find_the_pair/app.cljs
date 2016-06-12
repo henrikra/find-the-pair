@@ -1,17 +1,14 @@
 (ns find-the-pair.app
   (:require [find-the-pair.init :as init]
-            [find-the-pair.difficulty-dropdown :as dropdown]
+            [find-the-pair.difficulty-dropdown :refer [difficulty-dropdown]]
             [find-the-pair.card :as card]
-            [clojure.string :as str]
             [find-the-pair.victory-view :refer [victory-view]]
             [find-the-pair.state :refer [game-points
                                          cards-per-row
                                          cards-per-column
                                          game-won?
                                          show-increase
-                                         show-decrease
-                                         set-board-dimensions!
-                                         reset-game]]))
+                                         show-decrease]]))
 
 (defn board-view []
   [:div
@@ -28,16 +25,10 @@
     [:p.decrease {:style {:animation (if (show-decrease)
                               "fadeOutUp 0.7s forwards")}} (str "-" init/points-decrease)]]])
 
-(defn difficulty-change [x]
-  (let [selected-dimensions (.. x -target -value)
-        [per-row per-column] (str/split selected-dimensions "x")]
-    (set-board-dimensions! (int per-row) (int per-column))
-    (reset-game)))
-
 (defn app []
   [:div.container {:style {:max-width init/container-width}}
    [:h1 "Find the pair!"]
-   (dropdown/difficulty-dropdown difficulty-change)
+   (difficulty-dropdown)
    (if (game-won?)
      (victory-view)
      (board-view))])
