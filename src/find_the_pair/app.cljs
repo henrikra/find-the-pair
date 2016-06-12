@@ -3,7 +3,7 @@
             [find-the-pair.difficulty-dropdown :as dropdown]
             [find-the-pair.card :as card]
             [clojure.string :as str]
-            [find-the-pair.victory-view :as victory-view]
+            [find-the-pair.victory-view :refer [victory-view]]
             [find-the-pair.state :refer [game-points
                                          cards-per-row
                                          cards-per-column
@@ -39,5 +39,5 @@
    [:h1 "Find the pair!"]
    (dropdown/difficulty-dropdown difficulty-change)
    (if (game-won?)
-     (victory-view/victory-view reset-game (game-points))
+     (victory-view reset-game)
      (board-view))])
