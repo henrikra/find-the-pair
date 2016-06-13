@@ -12,9 +12,7 @@
   (let [card-side (/ init/container-width (cards-per-row))]
     [:div {:style (style/card card-side)}
      (if (card-exists? x y)
-       [:div {:class (if (flipped-card? x y)
-                     "card__sides card__sides--flipped"
-                     "card__sides")}
+       [:div {:style (style/card-sides (flipped-card? x y))}
         [:div.card__side.card__back
          {:on-click #(if (not (both-cards-flipped?))
                        (set-flipped-card x y))}]

@@ -73,14 +73,6 @@ body {
 
 /* -----Card----- */
 
-.card__sides {
-  height: 100%;
-  -webkit-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  transition: transform 0.5s;
-  cursor: pointer;
-}
-
 .card__side {
   color: #fff;
   position: absolute;
@@ -103,10 +95,6 @@ body {
 
 .card__front {
   background: #1abc9c;
-  transform: rotateY(180deg);
-}
-
-.card__sides--flipped {
   transform: rotateY(180deg);
 }
 
