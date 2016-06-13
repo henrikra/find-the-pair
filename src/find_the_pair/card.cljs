@@ -16,8 +16,7 @@
                      "card__sides card__sides--flipped"
                      "card__sides")
             :on-click (fn []
-                        (if (and (card-exists? x y)
-                                 (not (flipped-card? x y))
+                        (if (and (not (flipped-card? x y))
                                  (not (both-cards-flipped?)))
                           (set-flipped-card x y)))}
         [:div.card__side.card__back]
