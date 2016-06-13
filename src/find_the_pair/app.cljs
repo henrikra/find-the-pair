@@ -1,7 +1,7 @@
 (ns find-the-pair.app
   (:require [find-the-pair.init :as init]
             [find-the-pair.difficulty-dropdown :refer [difficulty-dropdown]]
-            [find-the-pair.card :as card]
+            [find-the-pair.card :refer [card]]
             [find-the-pair.victory-view :refer [victory-view]]
             [find-the-pair.state :refer [game-points
                                          cards-per-row
@@ -16,7 +16,7 @@
     [:div.board]
     (for [x (range (cards-per-row))
           y (range (cards-per-column))]
-      (card/card x y)))
+      (card x y)))
    [:p "Points: "
     [:span.victory__points (game-points)]]
    [:div.points
