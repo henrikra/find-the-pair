@@ -104,9 +104,9 @@
     (first-card-flipped! x y)))
 
 (defn both-cards-flipped? []
-  (and (= (card-flipped? 0)
-          (card-flipped? 1)
-          true)))
+  (= (card-flipped? 0)
+     (card-flipped? 1)
+     true))
 
 (defn flipped-card? [x y]
   (or (= [x y] (flipped-card 0))
