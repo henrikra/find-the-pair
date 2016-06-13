@@ -21,3 +21,25 @@
      :transition "transform 0.5s"
      :cursor "pointer"}
     (if flipped? {:transform "rotateY(180deg)"})))
+
+(def card-side
+  {:color "#fff"
+   :position "absolute"
+   :width "100%"
+   :height "100%"
+   :-webkit-backface-visibility "hidden"
+   :backface-visibility "hidden"
+   :-webkit-display "flex"
+   :display "flex"
+   :-webkit-align-items "center"
+   :align-items "center"
+   :-webkit-justify-content "center"
+   :justify-content "center"
+   :border "3px solid #ecf0f1"})
+
+(defn card-back []
+  (merge card-side {:background "#bdc3c7"}))
+
+(defn card-front []
+  (merge card-side {:background "#1abc9c"
+                    :transform "rotateY(180deg)"}))

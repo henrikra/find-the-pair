@@ -71,33 +71,6 @@ body {
   clear: both;
 }
 
-/* -----Card----- */
-
-.card__side {
-  color: #fff;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-display: flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  border: 3px solid #ecf0f1;
-}
-
-.card__back {
-  background: #bdc3c7;
-}
-
-.card__front {
-  background: #1abc9c;
-  transform: rotateY(180deg);
-}
-
 @keyframes fadeOutUp {
   0% {
     opacity: 0;

@@ -13,10 +13,10 @@
     [:div {:style (style/card card-side)}
      (if (card-exists? x y)
        [:div {:style (style/card-sides (flipped-card? x y))}
-        [:div.card__side.card__back
-         {:on-click #(if (not (both-cards-flipped?))
-                       (set-flipped-card x y))}]
-        [:div.card__side.card__front
+        [:div {:style (style/card-back)
+               :on-click #(if (not (both-cards-flipped?))
+                            (set-flipped-card x y))}]
+        [:div {:style (style/card-front)}
          (if (flipped-card? x y)
            [:i {:class (card-icon x y)
                 :style {:font-size (str (* card-side 0.4) "px")}}])]])]))
