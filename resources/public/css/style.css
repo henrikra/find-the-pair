@@ -11,12 +11,6 @@ body {
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
-/* -----Layout----- */
-
-.container {
-  margin: 0 auto;
-}
-
 /* -----Difficulty dropdown----- */
 
 .difficulty-dropdown {
