@@ -2,6 +2,7 @@
   (:require [find-the-pair.init :as init]
             [find-the-pair.card :refer [card]]
             [find-the-pair.points-flash :refer [points-flash]]
+            [find-the-pair.style :as style]
             [find-the-pair.state :refer [game-points
                                          cards-per-row
                                          cards-per-column
@@ -11,7 +12,7 @@
 (defn board-view []
   [:div
    (into
-    [:div.board]
+    [:div {:style style/board}]
     (for [x (range (cards-per-row))
           y (range (cards-per-column))]
       (card x y)))

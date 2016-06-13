@@ -63,14 +63,6 @@ body {
   background: #16a085;
 }
 
-/* -----Board----- */
-
-.board:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
 @keyframes fadeOutUp {
   0% {
     opacity: 0;

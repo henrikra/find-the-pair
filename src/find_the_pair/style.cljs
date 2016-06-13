@@ -43,3 +43,7 @@
 (defn card-front []
   (merge card-side {:background "#1abc9c"
                     :transform "rotateY(180deg)"}))
+
+(def board
+  {:overflow "auto"
+   :width "100%"})
