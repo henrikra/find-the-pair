@@ -14,12 +14,10 @@
      (if (card-exists? x y)
        [:div {:class (if (flipped-card? x y)
                      "card__sides card__sides--flipped"
-                     "card__sides")
-            :on-click (fn []
-                        (if (and (not (flipped-card? x y))
-                                 (not (both-cards-flipped?)))
-                          (set-flipped-card x y)))}
-        [:div.card__side.card__back]
+                     "card__sides")}
+        [:div.card__side.card__back
+         {:on-click #(if (not (both-cards-flipped?))
+                       (set-flipped-card x y))}]
         [:div.card__side.card__front
          (if (flipped-card? x y)
            [:i {:class (card-icon x y)
