@@ -50,3 +50,25 @@
 
 (def difficulty-dropdown
   {:margin-bottom "25px"})
+
+(def victory
+  {:margin-top "50px"
+   :padding "50px"
+   :border "2px solid #bdc3c7"})
+
+(def victory-icon
+  {:font-size "72px"
+   :animation "hovering 2s infinite"})
+
+(def victory-points
+  {:color "#1abc9c"
+   :font-size "24px"})
+
+(def victory-new-game
+  {:background "#1abc9c"
+   :color "#fff"
+   :border "0"
+   :padding "10px 20px"
+   :text-transform "uppercase"
+   :transition "all 0.5s"
+   :cursor "pointer"})
