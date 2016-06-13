@@ -68,7 +68,6 @@
   (add-points!)
   (remove-card! (flipped-card 0))
   (remove-card! (flipped-card 1))
-  (reset-flipped-cards!)
   (set-increase true))
 
 (defn card-rank
@@ -81,15 +80,16 @@
 
 (defn mistake []
   (reduce-points!)
-  (set-decrease true)
-  (reset-flipped-cards!))
+  (set-decrease true))
 
 (defn check-for-pair []
   (set-increase false)
   (set-decrease false)
-  (js/setTimeout #(if (found-pair?)
-                    (success)
-                    (mistake)) init/cards-visible-time))
+  (js/setTimeout #((if (found-pair?)
+                     (success)
+                     (mistake))
+                   (reset-flipped-cards!))
+                 init/cards-visible-time))
 
 (defn second-card-flipped! [x y]
   (swap! app-state assoc-in [:flipped-cards 1] [x y])
