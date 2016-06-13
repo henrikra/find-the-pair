@@ -47,3 +47,6 @@
 (def board
   {:overflow "auto"
    :width "100%"})
+
+(def difficulty-dropdown
+  {:margin-bottom "25px"})

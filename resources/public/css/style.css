@@ -11,12 +11,6 @@ body {
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
-/* -----Difficulty dropdown----- */
-
-.difficulty-dropdown {
-  margin-bottom: 25px;
-}
-
 /* -----Victory screen----- */
 
 @keyframes hovering {
