@@ -3,6 +3,7 @@
             [find-the-pair.difficulty-dropdown :refer [difficulty-dropdown]]
             [find-the-pair.card :refer [card]]
             [find-the-pair.victory-view :refer [victory-view]]
+            [find-the-pair.points-flash :refer [points-flash]]
             [find-the-pair.state :refer [game-points
                                          cards-per-row
                                          cards-per-column
@@ -20,10 +21,8 @@
    [:p "Points: "
     [:span.victory__points (game-points)]]
    [:div.points
-    [:p.increase {:style {:animation (if (show-increase)
-                              "fadeOutUp 0.7s forwards")}} (str "+" init/points-increase)]
-    [:p.decrease {:style {:animation (if (show-decrease)
-                              "fadeOutUp 0.7s forwards")}} (str "-" init/points-decrease)]]])
+    (points-flash (show-increase) (str "+" init/points-increase) "increase")
+    (points-flash (show-decrease) (str "-" init/points-decrease) "decrease")]])
 
 (defn app []
   [:div.container {:style {:max-width init/container-width}}
