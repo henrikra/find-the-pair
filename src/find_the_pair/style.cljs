@@ -1,6 +1,9 @@
 (ns find-the-pair.style
   (:require [find-the-pair.init :as init]))
 
+(def primary-color "#1abc9c")
+(def light-grey "#bdc3c7")
+
 (def container
   {:max-width init/container-width
    :margin "0 auto"})
@@ -38,10 +41,10 @@
    :border "3px solid #ecf0f1"})
 
 (defn card-back []
-  (merge card-side {:background "#bdc3c7"}))
+  (merge card-side {:background light-grey}))
 
 (defn card-front []
-  (merge card-side {:background "#1abc9c"
+  (merge card-side {:background primary-color
                     :transform "rotateY(180deg)"}))
 
 (def board
@@ -54,18 +57,18 @@
 (def victory
   {:margin-top "50px"
    :padding "50px"
-   :border "2px solid #bdc3c7"})
+   :border (str "2px solid " light-grey)})
 
 (def victory-icon
   {:font-size "72px"
    :animation "hovering 2s infinite"})
 
 (def victory-points
-  {:color "#1abc9c"
+  {:color primary-color
    :font-size "24px"})
 
 (def victory-new-game
-  {:background "#1abc9c"
+  {:background primary-color
    :color "#fff"
    :border "0"
    :padding "10px 20px"
