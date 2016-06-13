@@ -1,5 +1,6 @@
 (ns find-the-pair.card
   (:require [find-the-pair.init :as init]
+            [find-the-pair.style :as style]
             [find-the-pair.state :refer [cards-per-row
                                          flipped-card?
                                          both-cards-flipped?
@@ -9,8 +10,7 @@
 
 (defn card [x y]
   (let [card-side (/ init/container-width (cards-per-row))]
-    [:div.card {:style {:width (str card-side "px")
-                        :height (str card-side "px")}}
+    [:div {:style (style/card card-side)}
      (if (card-exists? x y)
        [:div {:class (if (flipped-card? x y)
                      "card__sides card__sides--flipped"

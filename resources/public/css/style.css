@@ -73,13 +73,6 @@ body {
 
 /* -----Card----- */
 
-.card {
-  position: relative;
-  -webkit-perspective: 800px;
-  perspective: 800px;
-  float: left;
-}
-
 .card__sides {
   height: 100%;
   -webkit-transform-style: preserve-3d;
