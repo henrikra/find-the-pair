@@ -75,3 +75,14 @@
    :text-transform "uppercase"
    :transition "all 0.5s"
    :cursor "pointer"})
+
+(def points-flash
+  {:margin "0"
+   :opacity "0"
+   :font-size "48px"})
+
+(defn points-flash-increase []
+  (merge points-flash {:color primary-color}))
+
+(defn points-flash-decrease []
+  (merge points-flash {:color "#e74c3c"}))

@@ -17,7 +17,7 @@
           y (range (cards-per-column))]
       (card x y)))
    [:p "Points: "
-    [:span.victory__points (game-points)]]
+    [:span {:style style/victory-points} (game-points)]]
    [:div.points
-    (points-flash (show-increase) (str "+" init/points-increase) "increase")
-    (points-flash (show-decrease) (str "-" init/points-decrease) "decrease")]])
+    (points-flash (show-increase) (str "+" init/points-increase) (style/points-flash-increase))
+    (points-flash (show-decrease) (str "-" init/points-decrease) (style/points-flash-decrease))]])
