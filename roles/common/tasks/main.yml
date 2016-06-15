@@ -1,3 +1,7 @@
+- name: Install Git
+  apt:
+    name: git
+
 - name: Add opt folder for Jenkins
   file:
     path: /opt
