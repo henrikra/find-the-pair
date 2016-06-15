@@ -48,7 +48,7 @@
                     :transform "rotateY(180deg)"}))
 
 (def board
-  {:overflow "auto"
+  {:overflow "hidden"
    :width "100%"})
 
 (def difficulty-dropdown
