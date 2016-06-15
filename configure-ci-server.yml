@@ -1,0 +1,8 @@
+---
+- name: Configure CI server
+  hosts: ci-server
+  user: root
+  roles:
+    - common
+    - geerlingguy.java
+    - geerlingguy.jenkins

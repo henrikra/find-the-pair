@@ -1,0 +1,4 @@
+- name: Add opt folder for Jenkins
+  file:
+    path: /opt
+    state: directory
