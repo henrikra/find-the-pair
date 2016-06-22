@@ -7,6 +7,11 @@ Classic memory game developed with ClojureScript.
 In this game the board is filled with cards which are turned backwards. You have to turn two cards at a time and find matching icons!
 You can try the game [here](http://henrikra.github.io/find-the-pair)
 
+## Setup Vagrant environment
+    vagrant up
+    vagrant ssh
+    cd /vagrant (this is the project folder in virtual machine)
+
 ## Setup
 
 To get an interactive development environment run:
